@@ -264,8 +264,8 @@ public class ReCallListGui extends MainForm {
 	private void removeSelection(){
 		
 		int[] index = tableGames.getSelectionIndices();
-		Iterator<BoardGame> i = boardsGame.iterator();
 		for(int ind: index){
+			Iterator<BoardGame> i = boardsGame.iterator();
 			TableItem ti = tableGames.getItem(ind);
 			int tmpGameId = Integer.parseInt(ti.getText(1));
 			while (i.hasNext()) {
@@ -274,8 +274,8 @@ public class ReCallListGui extends MainForm {
 					if(bg.isLoaded()){
 						bg.setStatus(GAMESTATUS.DELETE);
 						updatedBoardsGame.add(bg);
+						i.remove();
 					}
-					i.remove();
 				}
 			}
 		}

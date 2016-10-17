@@ -9,6 +9,8 @@ import it.gioca.torino.manager.db.facade.game.AddABoardGameListFacade;
 import it.gioca.torino.manager.db.facade.game.FindGameExpansionsFacade;
 import it.gioca.torino.manager.db.facade.game.request.BoardGameRequest;
 import it.gioca.torino.manager.db.facade.game.request.RequestFindGame;
+import it.gioca.torino.manager.db.facade.users.UserListFacade;
+import it.gioca.torino.manager.db.facade.users.request.RequestGetUsers;
 import it.gioca.torino.manager.gui.find.game.FindGameDialog;
 import it.gioca.torino.manager.gui.util.BoardGame;
 import it.gioca.torino.manager.gui.util.ColumnType;
@@ -62,13 +64,14 @@ public class AddListGui extends MainForm {
 
 	private Button remove;
 
+	private Combo demonstratorCombo;
+
 	public AddListGui(String stateName, String title) {
 		super(stateName, title);
 	}
 
 	@Override
 	public void createFrom() {
-//		drawButton(Messages.getString("AddListGui.0"), getMenuLaterale(), EBUTTON.ADD_LIST); //$NON-NLS-1$ //PREPARA LA LIST
 		drawButton(Messages.getString("AddListGui.1"), getMenuLaterale(), EBUTTON.LOAD_LIST); //$NON-NLS-1$ //RICHIAMA
 		drawButton(Messages.getString("AddListGui.2"), getMenuLaterale(), EBUTTON.MANAGE); //$NON-NLS-1$
 		drawButton(Messages.getString("AddListGui.3"), getMenuLaterale(), EBUTTON.UNLOAD); //$NON-NLS-1$
@@ -76,6 +79,15 @@ public class AddListGui extends MainForm {
 		drawCentrale();
 	}
 
+	private String[] getUsers(){
+		
+		RequestGetUsers request = new RequestGetUsers();
+		request.setAll(true);
+		UserListFacade ulf = new UserListFacade(request);
+		String[] users = ulf.getUsers();
+		return users;
+	}
+	
 	private void drawCentrale() {
 		
 		Composite centrale =  getMainComposite();
@@ -89,6 +101,8 @@ public class AddListGui extends MainForm {
 			FormUtil.createLabel(group, 1, Messages.getString("AddListGui.5"));
 			{
 				demonstrator = FormUtil.createText(group, 1, "");
+				FormUtil.createLabel(group, 1, "");
+				demonstratorCombo = FormUtil.createCombo(group, 1, getUsers());
 				demonstrator.setData(demonstrator.getText());
 				demonstrator.addFocusListener(new FocusListener() {
 					
@@ -101,6 +115,18 @@ public class AddListGui extends MainForm {
 					@Override
 					public void focusGained(FocusEvent arg0) {
 						demonstrator.setBackground(CYAN);
+					}
+				});
+				demonstratorCombo.addSelectionListener(new SelectionListener() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent arg0) {
+						demonstrator.setText("");
+					}
+					
+					@Override
+					public void widgetDefaultSelected(SelectionEvent arg0) {
+						
 					}
 				});
 			}
@@ -324,6 +350,8 @@ public class AddListGui extends MainForm {
 		
 		String name = null;
 		name = demonstrator.getText();
+		if(name==null || name.equalsIgnoreCase(""))
+			name = demonstratorCombo.getText();
 		BoardGameRequest bgr = new BoardGameRequest();
 		bgr.setBoardgames(boardsGame);
 		bgr.setUserName(name.toUpperCase());

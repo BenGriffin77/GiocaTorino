@@ -38,6 +38,7 @@ public class FindGameDialog extends MainDialog{
 	private Text titolo;
 	private Text autore;
 	private List<BoardGame> items;
+	private List<BoardGame> saved;
 
 	public FindGameDialog(Shell parent) {
 		super(parent);
@@ -46,6 +47,8 @@ public class FindGameDialog extends MainDialog{
 	@Override
 	protected void createTextWidgets(){
 		
+		FormUtil.createLabel(composite, 1, Messages.getString("FindGameDialog.2"));
+		titolo = FormUtil.createText(composite, "");
 		FormUtil.createLabel(composite, 1, Messages.getString("FindGameDialog.1"));
 		iDBgg = FormUtil.createText(composite, "");
 		iDBgg.addListener(SWT.Traverse, new Listener() {
@@ -82,9 +85,6 @@ public class FindGameDialog extends MainDialog{
 		        }
 		    }
 		});
-		
-		FormUtil.createLabel(composite, 1, Messages.getString("FindGameDialog.2"));
-		titolo = FormUtil.createText(composite, "");
 		titolo.addListener(SWT.Traverse, new Listener() {
 			
 			public void handleEvent(Event arg0) {
@@ -189,7 +189,6 @@ public class FindGameDialog extends MainDialog{
 				ti.setText(0, tg.getGameId()+"");
 				if(tg.getThumbnail()!=null){
 					try{
-//						ti.setImage(1, new Image(Display.getCurrent(), new ByteArrayInputStream(tg.getThumbnail())));
 						ti.setImage(1, FormUtil.setImageInTheTable(tg.getThumbnail()));
 					}catch(Exception e){
 						
@@ -216,12 +215,13 @@ public class FindGameDialog extends MainDialog{
 				}
 			}
 			items = tmpList;
+			saved = items;
 		}
 	}
 	
 	
 	public List<BoardGame> getGames(){
-		return items;
+		return saved;
 	}
 
 	@Override
