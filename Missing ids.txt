@@ -1,0 +1,4 @@
+INSERT into collections(id_user, id_boardgame, language) values(217, 32564, 'sv');
+INSERT into collections(id_user, id_boardgame, language) values(210, 20468, 'af');
+INSERT into collections(id_user, id_boardgame, language) values(198, 32564, 'sv');
+INSERT into collections(id_user, id_boardgame, language) values(198, 101859, 'en');
