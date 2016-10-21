@@ -7,18 +7,52 @@ require 'bgg'
 require 'parseconfig'
 require 'cld'
 require 'optparse'
+require 'pp'
 
+def parseOptions()
+	options = {}
+	
+	OptionParser.new do |opts|
+		opts.banner = "Usage: gt.rb -f CSV [options]"
+
+	  	opts.on("-f FILE", "--file FILE", "CSV file to import") do |file|
+			options[:file] = file
+	  	end
+	  	
+	  	opts.on("-y", "--yes", "Assume default answer to any question") do |y|
+			options[:yes] = y
+	  	end
+	  	
+	  	opts.on_tail("-h", "--help", "Show this message") do
+        	puts opts
+        	exit
+      	end
+	    
+	end.parse!
+	
+	raise OptionParser::MissingArgument if options[:file].nil?
+	p options
+	return options
+end
 
 def createCollections(games, db)
 	
-	games.each { |item| 
-		db.query("INSERT into collections(id_user, id_boardgame, language) values(#{item['id_user']}, #{item['id_boardgame']}, '#{item['language']}');")
+	games.each { |item|
+		puts "INSERT into collections(id_user, id_boardgame, language) values(#{item['id_user']}, #{item['id_boardgame']}, '#{item['language']}');"
+		
+		begin
+			db.query("INSERT into collections(id_user, id_boardgame, language) values(#{item['id_user']}, #{item['id_boardgame']}, '#{item['language']}');")
+		rescue Mysql::Error => err
+			puts err
+			next
+		end
 	}
 	
 end
 
-def gameLookup(text, users)
+def gameLookup(text, users, options)
 	collections = []
+	commonLanguages = ['en', 'fr', 'it',  'de']
 	
 	text.each { |line|
 		title = {}
@@ -31,6 +65,7 @@ def gameLookup(text, users)
 		
 		if quantity > 1
 			puts "Quantity > 1, checking for existing entry.."
+			
 			collections.each { |item| 
 				if item['gameQuery'] == gameQuery
 					puts "Existing entry has been found"
@@ -46,34 +81,36 @@ def gameLookup(text, users)
 			puts "Searching for #{gameQuery}.."
 			res = BggApi.search(type: 'boardgame', query: gameQuery, exact: 1)
 			res = BggApi.search(type: 'boardgame', query: gameQuery, exact: 0) if res['total'].to_i == 0
+			res = BggApi.search(type: 'boardgameexpansion', query: gameQuery, exact: 0) if res['total'].to_i == 0
 		
 			if res['total'].to_i == 0
 				words = gameQuery.split(' ')
 				words.slice!(-1)
 				newQuery = words.join(' ')
-				res = BggApi.search(type: 'boardgame', query: newQuery, exact: 0)			
+				res = BggApi.search(type: 'boardgame', query: newQuery, exact: 0)
+				res = BggApi.search(type: 'boardgameexpansion', query: newQuery, exact: 0) if res['total'].to_i == 0
 			end
 		
-			if res['total'].to_i > 0
+			if res['total'].to_i.between?(1,99)
 				games = res['item']
 		
 				if res['total'].to_i > 1
-					primaryGame = games.slice!(0)
+					#primaryGame = games.slice!(0)
 			
-					if primaryGame.has_key? 'yearpublished'
-						year = ", Year: #{primaryGame['yearpublished'].first['value']}"
-					else
-						year = ""
-					end
+					#if primaryGame.has_key? 'yearpublished'
+					#	year = ", Year: #{primaryGame['yearpublished'].first['value']}"
+					#else
+					#	year = ""
+					#end
 			
-					print "Best match found: #{primaryGame['name'].first['value']}#{year}. Confirm? [Y/n]"
-					answer = $stdin.gets.chomp
+					#print "Best match found: #{primaryGame['name'].first['value']}#{year}. Confirm? [Y/n]"
+					#answer = $stdin.gets.chomp
 			
-					if answer == 'n'
+					if not options.has_key?(:yes)
 						x = 0
 				
 						games.each { |game| 
-							test_var(game)
+							#test_var(game)
 					
 							if game.has_key? 'yearpublished'
 								year = ", Year: #{game['yearpublished'].first['value']}"
@@ -99,22 +136,28 @@ def gameLookup(text, users)
 			
 				gameName = games[choice]['name'].first['value']
 				language = CLD.detect_language(gameName)
-		
-				if not language[:reliable]
-					print "Language detected is #{language[:name]}. Confirm? [Y/n]"
-					answer = $stdin.gets.chomp
-			
-					if answer == 'n'
-						print "Please insert title language ISO code (ie. en,fr): "
-						language[:code] = $stdin.gets[0..1]
+				
+				if not options.has_key?(:yes)
+					if not commonLanguages.include? language[:code]
+						puts "Match unreliable. Defaulting to EN"
+						language[:code] = "en"
+					elsif not language[:reliable]
+						print "Language detected is #{language[:name]}\nPlease confirm by pressing ENTER or enter different language ISO code (ie. en,fr,it,de): "
+						answer = $stdin.gets.chomp
+						language[:code] = answer[0..1] if answer.length > 1
+					else
+						puts "Language for #{gameName} reliably detected as #{language[:name]}"
 					end
-				else
-					puts "Language for #{gameName} reliably detected as #{language[:name]}"
 				end
-		
+						
 				title.merge!({ 'gameQuery' => gameQuery, 'id_boardgame' => games[choice]['id'].to_i, 'language' => language[:code]})
 			else 
-				print "No suitable match has been found (typo?). Please insert correct name to search for: "
+				if res['total'].to_i < 1
+					print "No suitable match has been found (typo?). Please insert correct name to search for: "
+				else
+					print "Too many results. Try refining your search query: "
+				end
+					
 				newgame = $stdin.gets.chomp
 				puts "gameQuery: #{gameQuery}, line: #{line.chomp}, newgame: #{newgame}"
 				line.sub!(/,.*?,/, ",#{newgame},")
@@ -133,6 +176,7 @@ def gameLookup(text, users)
 		}
 		
 		collections << title
+		puts
 
 	}
 	
@@ -216,7 +260,29 @@ db.query("create database if not exists #{internaldb};")
 
 end
 
-import = ARGV.first
+
+trap("INT") {
+	puts "\n\n#{Time.now.strftime("%H:%M:%S")}\tCaught INT signal. Closing DB connection.."
+
+	begin
+		dbh.close
+    rescue
+        puts "\t\tConnection already terminated by peer. Exiting"
+    ensure
+       exit
+    end
+}
+
+begin
+	options = parseOptions()
+rescue OptionParser::MissingArgument => err
+	puts "#{err}\n"
+	ARGV << "-h"
+	retry
+end
+
+#puts "yes option" if options.has_key?(:yes)
+import = options[:file]
 config = ParseConfig.new("gt.conf")
 
 
@@ -228,16 +294,20 @@ rescue Mysql::Error
     exit
 end
 
-#options = parseOptions
 create_tables(dbh, config['internaldb'])
 
-list = File.new(import, 'r')
-text = list.readlines
+begin
+	list = File.new(import, 'r')
+	text = list.readlines
+rescue Errno::ENOENT => err
+	puts err
+	exit
+end
 
 users = userLookup(text, dbh)
 #users.each { |user| test_var(user); puts }
 puts
-games = gameLookup(text, users)
+games = gameLookup(text, users, options)
 createCollections(games, dbh)
 puts
 
