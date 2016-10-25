@@ -32,12 +32,14 @@ import org.eclipse.swt.widgets.Text;
 public class FindGameDialog extends MainDialog{
 
 	private Button OK;
+	private Button OK_NO_INDIETRO;
 
 	private Table tableItems;
 	private Text iDBgg;
 	private Text titolo;
 	private Text autore;
 	private List<BoardGame> items;
+	private List<BoardGame> saved;
 
 	public FindGameDialog(Shell parent) {
 		super(parent);
@@ -46,6 +48,8 @@ public class FindGameDialog extends MainDialog{
 	@Override
 	protected void createTextWidgets(){
 		
+		FormUtil.createLabel(composite, 1, Messages.getString("FindGameDialog.2"));
+		titolo = FormUtil.createText(composite, "");
 		FormUtil.createLabel(composite, 1, Messages.getString("FindGameDialog.1"));
 		iDBgg = FormUtil.createText(composite, "");
 		iDBgg.addListener(SWT.Traverse, new Listener() {
@@ -82,9 +86,6 @@ public class FindGameDialog extends MainDialog{
 		        }
 		    }
 		});
-		
-		FormUtil.createLabel(composite, 1, Messages.getString("FindGameDialog.2"));
-		titolo = FormUtil.createText(composite, "");
 		titolo.addListener(SWT.Traverse, new Listener() {
 			
 			public void handleEvent(Event arg0) {
@@ -130,10 +131,12 @@ public class FindGameDialog extends MainDialog{
 		});
 		
 		{
-			Group buttonsGroup = FormUtil.createAGroup(composite, 2, 3, "", true);
+			Group buttonsGroup = FormUtil.createAGroup(composite, 2, 4, "", true);
 			drawButton(Messages.getString("FindGameDialog.4"),buttonsGroup, EBUTTON.FIND);
 			OK = drawButton(Messages.getString("FindGameDialog.5"),buttonsGroup, EBUTTON.OK);
 			OK.setEnabled(false);
+			OK_NO_INDIETRO = drawButton(Messages.getString("FindGameDialog.9"),buttonsGroup, EBUTTON.OK_NO_INDIETRO);
+			OK_NO_INDIETRO.setEnabled(false);
 			drawButton(Messages.getString("FindGameDialog.6"),buttonsGroup, EBUTTON.INDIETRO);
 		}
 		{
@@ -150,6 +153,7 @@ public class FindGameDialog extends MainDialog{
 				@Override
 				public void mouseUp(MouseEvent arg0) {
 					OK.setEnabled(true);
+					OK_NO_INDIETRO.setEnabled(true);
 				}
 				
 				@Override
@@ -189,7 +193,6 @@ public class FindGameDialog extends MainDialog{
 				ti.setText(0, tg.getGameId()+"");
 				if(tg.getThumbnail()!=null){
 					try{
-//						ti.setImage(1, new Image(Display.getCurrent(), new ByteArrayInputStream(tg.getThumbnail())));
 						ti.setImage(1, FormUtil.setImageInTheTable(tg.getThumbnail()));
 					}catch(Exception e){
 						
@@ -216,16 +219,28 @@ public class FindGameDialog extends MainDialog{
 				}
 			}
 			items = tmpList;
+			if(saved!=null)
+				saved.addAll(items);
+			else
+				saved = items;
 		}
 	}
 	
 	
 	public List<BoardGame> getGames(){
-		return items;
+		return saved;
 	}
 
 	@Override
 	protected void back() {
 		items = new ArrayList<BoardGame>();
+	}
+
+	@Override
+	protected void impl() {
+		tableItems.removeAll();
+		titolo.setText("");
+		iDBgg.setText("");
+		autore.setText("");
 	}
 }

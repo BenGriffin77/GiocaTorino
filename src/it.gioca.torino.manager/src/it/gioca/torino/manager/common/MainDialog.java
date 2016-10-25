@@ -45,6 +45,8 @@ public abstract class MainDialog {
 	
 	protected abstract void back();
 	
+	protected abstract void impl();
+	
 	public void open(){
 		
 		setComposite();
@@ -68,6 +70,7 @@ public abstract class MainDialog {
 		NONE,
 		FIND,
 		OK,
+		OK_NO_INDIETRO,
 		INDIETRO;
 	}
 	
@@ -84,6 +87,7 @@ public abstract class MainDialog {
 				case NONE: return;
 				case FIND: find(); break;
 				case OK: save(); close();break;
+				case OK_NO_INDIETRO: save(); impl(); break;
 				case INDIETRO: back(); close(); break;
 				}
 			}

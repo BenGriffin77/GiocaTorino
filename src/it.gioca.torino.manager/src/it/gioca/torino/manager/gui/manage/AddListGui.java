@@ -9,6 +9,8 @@ import it.gioca.torino.manager.db.facade.game.AddABoardGameListFacade;
 import it.gioca.torino.manager.db.facade.game.FindGameExpansionsFacade;
 import it.gioca.torino.manager.db.facade.game.request.BoardGameRequest;
 import it.gioca.torino.manager.db.facade.game.request.RequestFindGame;
+import it.gioca.torino.manager.db.facade.users.UserListFacade;
+import it.gioca.torino.manager.db.facade.users.request.RequestGetUsers;
 import it.gioca.torino.manager.gui.find.game.FindGameDialog;
 import it.gioca.torino.manager.gui.util.BoardGame;
 import it.gioca.torino.manager.gui.util.ColumnType;
@@ -16,9 +18,16 @@ import it.gioca.torino.manager.gui.util.ColumnType.CTYPE;
 import it.gioca.torino.manager.gui.util.FormUtil;
 import it.gioca.torino.manager.gui.util.TinyGame;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -62,13 +71,16 @@ public class AddListGui extends MainForm {
 
 	private Button remove;
 
+	private Combo demonstratorCombo;
+	
+	private boolean selectedName;
+
 	public AddListGui(String stateName, String title) {
 		super(stateName, title);
 	}
 
 	@Override
 	public void createFrom() {
-//		drawButton(Messages.getString("AddListGui.0"), getMenuLaterale(), EBUTTON.ADD_LIST); //$NON-NLS-1$ //PREPARA LA LIST
 		drawButton(Messages.getString("AddListGui.1"), getMenuLaterale(), EBUTTON.LOAD_LIST); //$NON-NLS-1$ //RICHIAMA
 		drawButton(Messages.getString("AddListGui.2"), getMenuLaterale(), EBUTTON.MANAGE); //$NON-NLS-1$
 		drawButton(Messages.getString("AddListGui.3"), getMenuLaterale(), EBUTTON.UNLOAD); //$NON-NLS-1$
@@ -76,6 +88,15 @@ public class AddListGui extends MainForm {
 		drawCentrale();
 	}
 
+	private String[] getUsers(){
+		
+		RequestGetUsers request = new RequestGetUsers();
+		request.setAll(true);
+		UserListFacade ulf = new UserListFacade(request);
+		String[] users = ulf.getUsers();
+		return users;
+	}
+	
 	private void drawCentrale() {
 		
 		Composite centrale =  getMainComposite();
@@ -89,6 +110,8 @@ public class AddListGui extends MainForm {
 			FormUtil.createLabel(group, 1, Messages.getString("AddListGui.5"));
 			{
 				demonstrator = FormUtil.createText(group, 1, "");
+				FormUtil.createLabel(group, 1, "");
+				demonstratorCombo = FormUtil.createCombo(group, 1, getUsers());
 				demonstrator.setData(demonstrator.getText());
 				demonstrator.addFocusListener(new FocusListener() {
 					
@@ -96,6 +119,7 @@ public class AddListGui extends MainForm {
 					public void focusLost(FocusEvent arg0) {
 						demonstrator.setBackground(YELLOW);
 						checkParamitersSaveButton();
+						selectedName = false;
 					}
 					
 					@Override
@@ -103,6 +127,21 @@ public class AddListGui extends MainForm {
 						demonstrator.setBackground(CYAN);
 					}
 				});
+				demonstratorCombo.addSelectionListener(new SelectionListener() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent arg0) {
+						demonstrator.setText("");
+						selectedName = true;
+					}
+					
+					@Override
+					public void widgetDefaultSelected(SelectionEvent arg0) {
+						
+					}
+				});
+				FormUtil.createLabel(group, 1, "");
+				drawButton(Messages.getString("AddListGui.16"),group, EBUTTON.ADDLIST);
 			}
 			ColumnType[] columns = {new ColumnType(Messages.getString("AddListGui.6"), CTYPE.TEXT),
 					new ColumnType(Messages.getString("AddListGui.7"), CTYPE.TEXT)};
@@ -265,7 +304,7 @@ public class AddListGui extends MainForm {
 		tableExpansions.removeAll();
 		editedForm = true;
 	}
-
+	
 	private Button drawButton(String text, Composite c, final EBUTTON eB){
 		
 		Button dummy = FormUtil.createDummyButton(c, text);
@@ -281,6 +320,7 @@ public class AddListGui extends MainForm {
 							Workflow.getInstace().next(stateName, eB.toString(), getMainComposite(), getMenuLaterale()); 
 							break;
 				}
+				case ADDLIST: addFromList(); break;
 				default: Workflow.getInstace().next(stateName, eB.toString(), getMainComposite(), getMenuLaterale()); break;
 				}
 			}
@@ -293,6 +333,23 @@ public class AddListGui extends MainForm {
 		return dummy;
 	}
 	
+	protected void addFromList() {
+		ScriptEngine jruby = new ScriptEngineManager().getEngineByName("jruby");
+		// Assign the Java objects that you want to share
+		try {           
+            jruby.eval(new BufferedReader(new FileReader("Scripts/gt.rb")));
+            jruby.put("-f", "gt2015.csv");
+            System.out.println("result: " +jruby.get("res"));
+
+       } catch (FileNotFoundException e) {
+           // TODO Auto-generated catch block
+           e.printStackTrace();
+       } catch (ScriptException e) {
+           // TODO Auto-generated catch block
+           e.printStackTrace();
+       }
+	}
+
 	private void saveSelections(){
 		
 		int selection = tableGames.getSelectionIndex();
@@ -324,6 +381,8 @@ public class AddListGui extends MainForm {
 		
 		String name = null;
 		name = demonstrator.getText();
+		if(name==null || name.equalsIgnoreCase(""))
+			name = demonstratorCombo.getText();
 		BoardGameRequest bgr = new BoardGameRequest();
 		bgr.setBoardgames(boardsGame);
 		bgr.setUserName(name.toUpperCase());
@@ -349,8 +408,10 @@ public class AddListGui extends MainForm {
 	private void checkParamitersSaveButton(){
 		
 		if(editedForm){
-			if(demonstrator!=null && !demonstrator.isDisposed())
-				save.setEnabled(demonstrator.getText()!=null && !demonstrator.getText().equalsIgnoreCase("") && boardsGame.size()>0);
+//			if(demonstrator!=null && !demonstrator.isDisposed())
+			boolean tmp = ((demonstrator.getText()!=null && !demonstrator.getText().equalsIgnoreCase("") && boardsGame.size()>0) ||
+					selectedName && boardsGame.size()>0);
+				save.setEnabled(tmp);
 		}
 	}
 	
@@ -364,6 +425,7 @@ public class AddListGui extends MainForm {
 		LOAD_LIST,
 		MANAGE,
 		UNLOAD,
+		ADDLIST,
 		INDIETRO;
 		
 		public String toString() {
