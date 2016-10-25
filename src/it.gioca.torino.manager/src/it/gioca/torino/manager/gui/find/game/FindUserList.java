@@ -79,4 +79,10 @@ public class FindUserList extends MainDialog {
 		
 	}
 
+	@Override
+	protected void impl() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

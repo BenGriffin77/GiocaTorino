@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="LIB/jcommon-1.0.23.jar"/>
 	<classpathentry kind="lib" path="LIB/jfreechart-1.0.19-swt.jar"/>
 	<classpathentry kind="lib" path="LIB/jfreechart-1.0.19.jar"/>
+	<classpathentry kind="lib" path="LIB/jruby.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

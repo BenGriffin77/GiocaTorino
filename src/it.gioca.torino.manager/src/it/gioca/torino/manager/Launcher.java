@@ -3,13 +3,13 @@ package it.gioca.torino.manager;
 
 import it.gioca.torino.manager.common.MainForm;
 import it.gioca.torino.manager.db.manager.ManageMultiToMulti;
-import it.gioca.torino.manager.db.manager.ManageNames;
 import it.gioca.torino.manager.db.manager.RequestMulti;
 import it.gioca.torino.manager.gui.YESNODialog;
 import it.gioca.torino.manager.gui.YESNODialog.Action;
 import it.gioca.torino.manager.gui.util.FormUtil;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -51,8 +51,7 @@ public class Launcher {
 		      }
 		    });
 		shell.setText(Messages.getString("Launcher.1")); //$NON-NLS-1$
-		
-		//shell.setImage(new Image(Display.getCurrent(), "ICO/AL.jpg")); //$NON-NLS-1$
+		shell.setImage(new Image(Display.getCurrent(), "IMG/LogoGT.png")); //$NON-NLS-1$
 		Composite c = createContents(shell);
 		form.setMainComposite(c);
 		form.createFrom();

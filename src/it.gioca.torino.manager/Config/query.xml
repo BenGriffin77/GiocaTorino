@@ -145,4 +145,7 @@
 		<value id="10">SELECT ID_CATEGORY FROM giocatorino.boardgame_catogory WHERE CATEGORY_NAME = ?</value>
 		<value id="11">SELECT MAX(ID_CATEGORY) AS MAX from giocatorino.boardgame_catogory</value>
 	</query>
+	<query name="SEARCH">
+	    <value id="0">SELECT B.CATEGORY_NAME from giocatorino.boardgame_catogory B, giocatorino.category_fkey F	where B.ID_CATEGORY = F.ID_CATEGORY	AND F.ID_GAME=?</value>
+	</query>
 </list>

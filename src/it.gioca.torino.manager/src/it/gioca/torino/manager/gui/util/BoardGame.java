@@ -25,6 +25,8 @@ public class BoardGame extends TinyGame {
 	
 	private int id_document;
 	
+	private List<String> categories;
+	
 	public BoardGame(TinyGame game) {
 		super(game.getGameId(), game.getName(), null);
 	}
@@ -128,6 +130,24 @@ public class BoardGame extends TinyGame {
 
 	public void setId_document(int id_document) {
 		this.id_document = id_document;
+	}
+
+	public List<String> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<String> categories) {
+		this.categories = categories;
+	}
+	
+	public boolean containsCategory(String value){
+		
+		if(categories==null || categories.size()==0)
+			return false;
+		for(String cat: categories)
+			if(cat.equalsIgnoreCase(value))
+				return true;
+		return false;
 	}
 
 }

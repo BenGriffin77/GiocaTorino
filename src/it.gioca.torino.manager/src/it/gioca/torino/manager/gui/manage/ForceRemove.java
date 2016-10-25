@@ -193,5 +193,11 @@ public class ForceRemove extends MainDialog {
 	public void setUserName(String userName){
 		this.userName = userName;
 	}
+
+	@Override
+	protected void impl() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

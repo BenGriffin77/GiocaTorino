@@ -9,7 +9,10 @@ import it.gioca.torino.manager.db.facade.game.request.AllGameRequest;
 import it.gioca.torino.manager.db.facade.game.request.AllGameRequest.RequestTYPE;
 import it.gioca.torino.manager.db.facade.game.request.GameRequest;
 import it.gioca.torino.manager.db.facade.game.request.GameRequest.GAMESTATUS;
+import it.gioca.torino.manager.db.facade.toylibrary.FindCategory;
+import it.gioca.torino.manager.db.facade.toylibrary.RequestFind;
 import it.gioca.torino.manager.db.facade.toylibrary.RetriveAllUsedExitIdFacade;
+import it.gioca.torino.manager.db.facade.toylibrary.SearchType;
 import it.gioca.torino.manager.gui.YESNODialog;
 import it.gioca.torino.manager.gui.YESNODialog.Action;
 import it.gioca.torino.manager.gui.util.BoardGame;
@@ -27,6 +30,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
@@ -34,6 +38,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 
 public class ToyLibrary extends MainForm {
 
@@ -42,6 +47,9 @@ public class ToyLibrary extends MainForm {
 	private Button IN;
 	private List<BoardGame> games;
 	private CheckOutObjectModel coModel;
+	private Text filter;
+	private Group functions;
+	private Combo categoryFiler;
 
 	public ToyLibrary(String stateName, String title) {
 		super(stateName, title);
@@ -51,10 +59,11 @@ public class ToyLibrary extends MainForm {
 	@Override
 	public void createFrom() {
 		{
-			drawButton(Messages.getString("ToyLibrary.0"), getMenuLaterale(), EBUTTON.NOW); //Situazione
+			//drawButton(Messages.getString("ToyLibrary.0"), getMenuLaterale(), EBUTTON.NOW); //Situazione
 			drawButton(Messages.getString("ToyLibrary.1"), getMenuLaterale(), EBUTTON.EXIT_GAME); //Uscita
 			drawButton(Messages.getString("ToyLibrary.2"), getMenuLaterale(), EBUTTON.ENTER_GAME); //Entrata
 			drawButton(Messages.getString("ToyLibrary.3"), getMenuLaterale(), EBUTTON.INDIETRO); //Indietro
+			showSituation();
 		}		
 	}
 	
@@ -72,15 +81,20 @@ public class ToyLibrary extends MainForm {
 			ColumnType[] columns = {new ColumnType(Messages.getString("ToyLibrary.5"), CTYPE.TEXT),
 									new ColumnType(Messages.getString("ToyLibrary.6"), CTYPE.IMAGE),
 									new ColumnType(Messages.getString("ToyLibrary.7"), CTYPE.TEXT),
-									new ColumnType(Messages.getString("ToyLibrary.11"), CTYPE.TEXT)};
+									new ColumnType(Messages.getString("ToyLibrary.11"), CTYPE.TEXT),
+									new ColumnType(Messages.getString("ToyLibrary.13"), CTYPE.INT)};
 			tableGames = FormUtil.createTable(group, columns);
 			
-			Group functions = FormUtil.createAGroup(group, 1, 1, "", true);
-			drawButton(Messages.getString("ToyLibrary.8"), functions, EBUTTON.UPDATE);
-			OUT = drawButton(Messages.getString("ToyLibrary.9"), functions, EBUTTON.OUT, true);
-			OUT.setSelection(true);
-			IN = drawButton(Messages.getString("ToyLibrary.10"), functions, EBUTTON.IN, true);
-			OUT.setSelection(false);
+			{
+				functions = FormUtil.createAGroup(group, 1, 1, "", true);
+				FormUtil.createLabel(functions, 1, "Filtro:");
+				filter = FormUtil.createText(functions, "");
+				drawButton(Messages.getString("ToyLibrary.8"), functions, EBUTTON.UPDATE);
+				OUT = drawButton(Messages.getString("ToyLibrary.9"), functions, EBUTTON.OUT, true);
+				OUT.setSelection(true);
+				IN = drawButton(Messages.getString("ToyLibrary.10"), functions, EBUTTON.IN, true);
+				OUT.setSelection(false);
+			}
 			tableGames.addMouseListener(new MouseListener() {
 				
 				@Override
@@ -173,18 +187,70 @@ public class ToyLibrary extends MainForm {
 		TableItem ti;
 		if(games!=null && games.size()>0){
 			for(BoardGame bg: games){
+				if(filter.getText()!=""){
+					String text = filter.getText();
+					if(!bg.getName().toLowerCase().contains(text.toLowerCase()))
+						continue;
+				}
 				ti = new TableItem(tableGames, SWT.NONE);
 				ti.setText(0, bg.getName());
 				if(bg.getThumbnail()!=null)
 					ti.setImage(1, FormUtil.setImageInTheTable(bg.getThumbnail()));
-				ti.setText(2, bg.getDimostrator());
+				ti.setText(2, bg.getStatusGame()==0? "IN LUDOTECA":bg.getDimostrator());
 				ti.setText(3, bg.getOwnerName());
+				ti.setText(4, bg.getId_document()+"");
 			}
 		}
 		for(TableColumn tc: tableGames.getColumns())
 			tc.pack();
+		loadFilter();
 	}
 	
+	private void loadFilter() {
+		
+		RequestFind request = new RequestFind();
+		request.setType(SearchType.CATEGORY);
+		for(BoardGame bg : games)
+			request.addGameId(bg.getGameId());
+		FindCategory fg = new FindCategory(request);
+		if(categoryFiler==null){
+			FormUtil.createLabel(functions, 1, Messages.getString("ToyLibrary.14"));
+			categoryFiler = FormUtil.createCombo(functions, 1, fg.getElements());
+		}
+		else{
+			categoryFiler.removeAll();
+			categoryFiler.setItems(fg.getElements());
+		}
+		for(BoardGame bg : games)
+			bg.setCategories(fg.getElementById(bg.getGameId()));
+		categoryFiler.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				String category = categoryFiler.getText();
+				tableGames.removeAll();
+				TableItem ti;
+				for(BoardGame bg: games){
+					if(bg.containsCategory(category)){
+						ti = new TableItem(tableGames, SWT.NONE);
+						ti.setText(0, bg.getName());
+						if(bg.getThumbnail()!=null)
+							ti.setImage(1, FormUtil.setImageInTheTable(bg.getThumbnail()));
+						ti.setText(2, bg.getStatusGame()==0? "IN LUDOTECA":bg.getDimostrator());
+						ti.setText(3, bg.getOwnerName());
+						ti.setText(4, bg.getId_document()+"");
+					}
+				}
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				
+			}
+		});
+	}
+
+
 	private Button drawButton(String text, Composite c, final EBUTTON eB){
 		
 		return drawButton(text, c, eB, false);
@@ -205,7 +271,7 @@ public class ToyLibrary extends MainForm {
 				switch(eB){
 				case IN:
 				case OUT: fillTheTable(); break;
-				case NOW: showSituation(); break;
+//				case NOW: showSituation(); break;
 				case UPDATE: fillTheTable(); break;
 				default: Workflow.getInstace().next(stateName, eB.toString(), getMainComposite(), getMenuLaterale()); break;
 				}
@@ -223,7 +289,7 @@ public class ToyLibrary extends MainForm {
 		
 		OUT,
 		IN,
-		NOW,
+//		NOW,
 		UPDATE,
 		EXIT_GAME,
 		ENTER_GAME,
