@@ -38,10 +38,10 @@ end
 def createCollections(games, db)
 	
 	games.each { |item|
-		puts "INSERT into collections(id_user, id_boardgame, language) values(#{item['id_user']}, #{item['id_boardgame']}, '#{item['language']}');"
+		puts "INSERT into preloads(user, id_game, language, quantity, id_maingame) values(#{item['id_user']}, #{item['id_boardgame']}, '#{item['language']}', 1, 0);"
 		
 		begin
-			db.query("INSERT into collections(id_user, id_boardgame, language) values(#{item['id_user']}, #{item['id_boardgame']}, '#{item['language']}');")
+			db.query("INSERT into preloads(user, id_game, language, quantity, id_maingame) values(#{item['id_user']}, #{item['id_boardgame']}, '#{item['language']}', 1, 0);")
 		rescue Mysql::Error => err
 			puts err
 			next
@@ -51,7 +51,7 @@ def createCollections(games, db)
 end
 
 def gameLookup(text, users, options)
-	collections = []
+	preloads = []
 	commonLanguages = ['en', 'fr', 'it',  'de']
 	
 	text.each { |line|
@@ -66,7 +66,7 @@ def gameLookup(text, users, options)
 		if quantity > 1
 			puts "Quantity > 1, checking for existing entry.."
 			
-			collections.each { |item| 
+			preloads.each { |item| 
 				if item['gameQuery'] == gameQuery
 					puts "Existing entry has been found"
 					found = true
@@ -175,12 +175,12 @@ def gameLookup(text, users, options)
 			end
 		}
 		
-		collections << title
+		preloads << title
 		puts
 
 	}
 	
-	return collections
+	return preloads
 end
 
 def test_var(h)
@@ -201,7 +201,7 @@ def userLookup(text, db)
 	names.each { |name|
 		ary = []
 		choice, x = 0, 0
-		res = db.query("SELECT * from users where realname like '%#{name}%' or nickname like '%#{name}%';")
+		res = db.query("SELECT userid as id, realname, username, email from users where realname like '%#{name}%' or username like '%#{name}%';")
 		puts "Searched for #{name}. #{res.num_rows} matches found:"
 		#puts res.methods
 		#exit
@@ -223,7 +223,7 @@ def userLookup(text, db)
 		
 			res.each_hash { |row|
 				ary << row
-				puts "#{x}. Real Name: #{row['realname']}, Nickname: #{row['nickname']}, Email: #{row['email']}"
+				puts "#{x}. Realname: #{row['realname']}, username: #{row['username']}, Email: #{row['email']}"
 				x += 1
 			}
 		
@@ -233,7 +233,7 @@ def userLookup(text, db)
 	    else
 	    	res.each_hash { |row| 
 	    		ary << row
-	    		puts "Real Name: #{row['realname']}, Nickname: #{row['nickname']}, Email: #{row['email']}" 
+	    		puts "Realname: #{row['realname']}, username: #{row['username']}, Email: #{row['email']}" 
 	    	}	
 		end
 		
@@ -247,16 +247,16 @@ end
 
 
 def create_tables(db, internaldb)
-db.query("create database if not exists #{internaldb};")
+	#db.query("create database if not exists #{internaldb};")
 
     #Set current DB for further operations
 	db.select_db("#{internaldb}")
 	
-	db.query("CREATE TABLE if not exists users (id tinyint(2) unsigned NOT NULL auto_increment, realname char(64), nickname char(32), email char(64), role tinyint(2), available mediumint(6) default 0, PRIMARY KEY (id)) engine=innodb;")
+	#db.query("CREATE TABLE if not exists users (id tinyint(2) unsigned NOT NULL auto_increment, realname char(64), nickname char(32), email char(64), role tinyint(2), available mediumint(6) default 0, PRIMARY KEY (id)) engine=innodb;")
 
-    db.query("CREATE TABLE if not exists collections (id smallint(4) unsigned NOT NULL auto_increment, id_user tinyint(2) unsigned not null, id_boardgame int(11) not null, status enum('checkin', 'ludoteca', 'demo', 'checkout') default 'checkin', document tinyint(2) unsigned default 0, language char(2), PRIMARY KEY (id), FOREIGN KEY (id_user) REFERENCES users(id) on update cascade on delete cascade, FOREIGN KEY (id_boardgame) REFERENCES boardgames(ID) on update cascade on delete cascade) engine=innodb;")
+    #db.query("CREATE TABLE if not exists preloads (id smallint(4) unsigned NOT NULL auto_increment, id_user tinyint(2) unsigned not null, id_boardgame int(11) not null, status enum('checkin', 'ludoteca', 'demo', 'checkout') default 'checkin', document tinyint(2) unsigned default 0, language char(2), PRIMARY KEY (id), FOREIGN KEY (id_user) REFERENCES users(id) on update cascade on delete cascade, FOREIGN KEY (id_boardgame) REFERENCES boardgames(ID) on update cascade on delete cascade) engine=innodb;")
 	
-    db.query("CREATE TABLE if not exists demos (id smallint(4) unsigned not null auto_increment, id_user tinyint(2) unsigned not null, id_collection smallint(4) unsigned not null, start timestamp default 0, end timestamp default 0, PRIMARY KEY (id), INDEX (id_user,id_collection), FOREIGN KEY (id_user) REFERENCES users(id) on update cascade on delete cascade, FOREIGN KEY (id_collection) REFERENCES collections(id) on update cascade on delete cascade) engine=innodb;")
+    #db.query("CREATE TABLE if not exists demos (id smallint(4) unsigned not null auto_increment, id_user tinyint(2) unsigned not null, id_preloads smallint(4) unsigned not null, start timestamp default 0, end timestamp default 0, PRIMARY KEY (id), INDEX (id_user,id_preloads), FOREIGN KEY (id_user) REFERENCES users(id) on update cascade on delete cascade, FOREIGN KEY (id_preloads) REFERENCES preloads(id) on update cascade on delete cascade) engine=innodb;")
 
 end
 
@@ -311,7 +311,7 @@ games = gameLookup(text, users, options)
 createCollections(games, dbh)
 puts
 
-#select boardgames.name,boardgames.age,users.realname,users.nickname from collections inner join users on collections.id_user = users.id inner join boardgames on collections.id_boardgame = boardgames.id;
+#select boardgames.name,boardgames.age,users.realname,users.nickname from preloads inner join users on preloads.id_user = users.id inner join boardgames on preloads.id_boardgame = boardgames.id;
 
 
 
