@@ -173,7 +173,8 @@ public class ManageGui extends MainForm {
 				});
 			}
 			ColumnType[] columns = {new ColumnType(Messages.getString("ManageGui.8"), CTYPE.TEXT),
-									new ColumnType(Messages.getString("ManageGui.9"), CTYPE.TEXT)};
+									new ColumnType(Messages.getString("ManageGui.9"), CTYPE.TEXT),
+									new ColumnType(Messages.getString("ManageGui.16"), CTYPE.TEXT)};
 			tableGames = FormUtil.createTable(group, columns);
 			tableGames.addSelectionListener(new SelectionListener() {
 				
@@ -392,12 +393,12 @@ public class ManageGui extends MainForm {
 		if(games.size()>0){
 			for(BoardGame game: games){
 				TableItem ti = new TableItem(tableGames, SWT.NONE);
-				ti.setText(new String[]{game.getName(),game.getGameId()+""});
+				ti.setText(new String[]{game.getName(),game.getGameId()+"",game.getLanguage()});
 				if(forceRemove!=null && !forceRemove.isDisposed()){
 					if(game.getStatusGame()!=0)
 						ti.setBackground(ThemeManager.getColor(COLOR.RED));
 				}
-				game.setLanguage("ITALIANO");
+				//game.setLanguage("ITALIANO");
 				if(newElements)
 					boardsGame.add(new BoardGame(game));
 				else

@@ -8,6 +8,7 @@ require 'parseconfig'
 require 'cld'
 require 'optparse'
 require 'pp'
+require 'json'
 
 def parseOptions()
 	options = {}
@@ -50,9 +51,9 @@ def createCollections(games, db)
 	
 end
 
-def gameLookup(text, users, options)
+def gameLookup(text, users, options, languages)
 	preloads = []
-	commonLanguages = ['en', 'fr', 'it',  'de']
+	commonLanguages = ['en', 'fr', 'it',  'de', 'es']
 	
 	text.each { |line|
 		title = {}
@@ -144,13 +145,22 @@ def gameLookup(text, users, options)
 					elsif not language[:reliable]
 						print "Language detected is #{language[:name]}\nPlease confirm by pressing ENTER or enter different language ISO code (ie. en,fr,it,de): "
 						answer = $stdin.gets.chomp
-						language[:code] = answer[0..1] if answer.length > 1
+						
+						if answer.length > 1
+							languages.each { |lang| 
+								if lang['code'] == answer or lang['short'] == answer or lang['name'] =~ /#{answer}/
+									language[:name] = lang['name']
+									language[:code] = lang['code']
+									break
+								end
+							}
+						end
 					else
 						puts "Language for #{gameName} reliably detected as #{language[:name]}"
 					end
 				end
 						
-				title.merge!({ 'gameQuery' => gameQuery, 'id_boardgame' => games[choice]['id'].to_i, 'language' => language[:code]})
+				title.merge!({ 'gameQuery' => gameQuery, 'id_boardgame' => games[choice]['id'].to_i, 'language' => language[:name]})
 			else 
 				if res['total'].to_i < 1
 					print "No suitable match has been found (typo?). Please insert correct name to search for: "
@@ -273,6 +283,8 @@ trap("INT") {
     end
 }
 
+
+
 begin
 	options = parseOptions()
 rescue OptionParser::MissingArgument => err
@@ -284,6 +296,9 @@ end
 #puts "yes option" if options.has_key?(:yes)
 import = options[:file]
 config = ParseConfig.new("gt.conf")
+languages = JSON(config['languages']).to_ary
+#languages.each { |language| test_var(language) }
+#exit
 
 
 #here we connect to target DBMS, select our DB and perform the main procedure to substitute any raw id
@@ -307,7 +322,7 @@ end
 users = userLookup(text, dbh)
 #users.each { |user| test_var(user); puts }
 puts
-games = gameLookup(text, users, options)
+games = gameLookup(text, users, options, languages)
 createCollections(games, dbh)
 puts
 

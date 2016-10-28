@@ -38,6 +38,7 @@
 		<value id="3">DELETE FROM giocatorino.preloads WHERE ID_GAME=? AND USER=?</value>
 		<value id="4">UPDATE giocatorino.preloads SET LANGUAGE=? WHERE ID_GAME=? AND USER=?</value>
 		<value id="5">DELETE FROM giocatorino.preloads WHERE USER=?</value>
+		<value id="6">SELECT DISTINCT language FROM giocatorino.preloads</value>
 	</query>
 	<query name="BOARDGAME_STATUS">
 		<value id="0">INSERT INTO boardgame_status (ID_GAME, OWNERID, STATUS, LANGUAGE, ID_MAINGAME, DEMONSTRATOR) VALUES(?,?,?,?,?,0)</value>
