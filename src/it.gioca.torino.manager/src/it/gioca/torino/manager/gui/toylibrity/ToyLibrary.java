@@ -79,6 +79,7 @@ public class ToyLibrary extends MainForm {
 		{
 			FormUtil.createLabel(group, 2, Messages.getString("ToyLibrary.4"));
 			ColumnType[] columns = {new ColumnType(Messages.getString("ToyLibrary.5"), CTYPE.TEXT),
+									new ColumnType(Messages.getString("ToyLibrary.15"), CTYPE.TEXT),
 									new ColumnType(Messages.getString("ToyLibrary.6"), CTYPE.IMAGE),
 									new ColumnType(Messages.getString("ToyLibrary.7"), CTYPE.TEXT),
 									new ColumnType(Messages.getString("ToyLibrary.11"), CTYPE.TEXT),
@@ -194,11 +195,14 @@ public class ToyLibrary extends MainForm {
 				}
 				ti = new TableItem(tableGames, SWT.NONE);
 				ti.setText(0, bg.getName());
-				if(bg.getThumbnail()!=null)
-					ti.setImage(1, FormUtil.setImageInTheTable(bg.getThumbnail()));
-				ti.setText(2, bg.getStatusGame()==0? "IN LUDOTECA":bg.getDimostrator());
-				ti.setText(3, bg.getOwnerName());
-				ti.setText(4, bg.getId_document()+"");
+				//ti.setText(1, bg.getLanguage());
+				
+				if(bg.getThumbnail() != null)
+					ti.setImage(2, FormUtil.setImageInTheTable(bg.getThumbnail()));
+				
+				ti.setText(3, bg.getStatusGame()==0? "IN LUDOTECA":bg.getDimostrator());
+				ti.setText(4, bg.getOwnerName());
+				ti.setText(5, bg.getId_document()+"");
 			}
 		}
 		for(TableColumn tc: tableGames.getColumns())

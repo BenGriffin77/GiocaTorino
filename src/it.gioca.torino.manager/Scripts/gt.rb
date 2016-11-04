@@ -9,6 +9,7 @@ require 'cld'
 require 'optparse'
 require 'pp'
 require 'json'
+require_relative './common'
 
 def parseOptions()
 	options = {}
@@ -111,7 +112,6 @@ def gameLookup(text, users, options, languages)
 						x = 0
 				
 						games.each { |game| 
-							#test_var(game)
 					
 							if game.has_key? 'yearpublished'
 								year = ", Year: #{game['yearpublished'].first['value']}"
@@ -177,7 +177,7 @@ def gameLookup(text, users, options, languages)
 		end
 			
 		users.each { |user|
-			test_var(user)
+			puts user.inspect
 		 
 			if user['name'] == name
 				title.merge!({ 'id_user' => user['id'] })
@@ -191,11 +191,6 @@ def gameLookup(text, users, options, languages)
 	}
 	
 	return preloads
-end
-
-def test_var(h)
-    h.each_pair {|key, value| print "#{key} is #{value}, " }
-    puts	
 end
 
 def userLookup(text, db)
@@ -297,18 +292,11 @@ end
 import = options[:file]
 config = ParseConfig.new("gt.conf")
 languages = JSON(config['languages']).to_ary
-#languages.each { |language| test_var(language) }
+#puts languages.inspect
 #exit
 
 
-#here we connect to target DBMS, select our DB and perform the main procedure to substitute any raw id
-begin
-    dbh = Mysql.real_connect(config['dbms'], config['dbuser'], config['dbpass'], 'mysql')
-rescue Mysql::Error
-    puts "\t!! Error connecting to DBMS. QUITTING !!"
-    exit
-end
-
+dbh = Common.dbConnect(config) 
 create_tables(dbh, config['internaldb'])
 
 begin
@@ -320,7 +308,7 @@ rescue Errno::ENOENT => err
 end
 
 users = userLookup(text, dbh)
-#users.each { |user| test_var(user); puts }
+puts users.inspect
 puts
 games = gameLookup(text, users, options, languages)
 createCollections(games, dbh)

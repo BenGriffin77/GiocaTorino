@@ -40,6 +40,7 @@ public class AllGameListFacede extends ConnectionManager {
 			if(rset!=null){
 				int gameId;
 				String name;
+				String language;
 				byte[] thumbnail;
 				String user;
 				BoardGame bg;
@@ -50,6 +51,7 @@ public class AllGameListFacede extends ConnectionManager {
 				while(rset.next()){
 					gameId = rset.getInt("ID_GAME");
 					name = rset.getString("NAME");
+					language = rset.getString("LANGUAGE");
 					Blob image = rset.getBlob("thumbnail");
 					user = rset.getString("USERNAME");
 					exitId = rset.getInt("ID_EXIT");
@@ -64,6 +66,7 @@ public class AllGameListFacede extends ConnectionManager {
 			    		bg.setOwnerID(ownerId);
 			    		bg.setId_document(id_document);
 			    		bg.setStatusGame(statusGame);
+			    		//bg.setLanguage(language);
 			    		games.add(bg);
 			    		image.free();
 			    	}
@@ -72,6 +75,7 @@ public class AllGameListFacede extends ConnectionManager {
 			    		bg.setDimostrator(user);
 			    		bg.setExitId(exitId);
 			    		bg.setOwnerID(ownerId);
+			    		//bg.setLanguage(language);
 			    		games.add(bg);
 			    	}
 				}

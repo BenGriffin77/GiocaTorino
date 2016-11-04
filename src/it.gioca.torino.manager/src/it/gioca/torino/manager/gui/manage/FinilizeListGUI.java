@@ -112,7 +112,8 @@ public class FinilizeListGUI extends MainForm {
 				});
 			}
 			ColumnType[] columns = {new ColumnType(Messages.getString("AddListGui.6"), CTYPE.TEXT),
-					new ColumnType(Messages.getString("AddListGui.7"), CTYPE.TEXT)};
+					new ColumnType(Messages.getString("AddListGui.7"), CTYPE.TEXT),
+					new ColumnType(Messages.getString("AddListGui.17"), CTYPE.TEXT)};
 			tableGames = FormUtil.createTable(group, columns);
 			tableGames.addSelectionListener(new SelectionListener() {
 				
@@ -258,8 +259,8 @@ public class FinilizeListGUI extends MainForm {
 		if(games.size()>0){
 			for(BoardGame game: games){
 				TableItem ti = new TableItem(tableGames, SWT.NONE);
-				ti.setText(new String[]{game.getName(),game.getGameId()+""});
-				game.setLanguage("ITALIANO");
+				ti.setText(new String[]{game.getName(),game.getGameId()+"",game.getLanguage()});
+				//game.setLanguage("ITALIANO");
 				if(newElements)
 					boardsGame.add(new BoardGame(game));
 				else

@@ -59,7 +59,7 @@ public class BoardGame extends TinyGame {
 	}
 
 	public String getLanguage() {
-		return (language==null || language.equalsIgnoreCase(""))?"ITALIANO":language;
+		return language;
 	}
 
 	public void setLanguage(String language) {

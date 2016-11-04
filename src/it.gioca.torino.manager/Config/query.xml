@@ -43,7 +43,7 @@
 	<query name="BOARDGAME_STATUS">
 		<value id="0">INSERT INTO boardgame_status (ID_GAME, OWNERID, STATUS, LANGUAGE, ID_MAINGAME, DEMONSTRATOR) VALUES(?,?,?,?,?,0)</value>
 		<value id="1">SELECT giocatorino.boardgames.NAME, giocatorino.boardgames.thumbnail, giocatorino.users.USERNAME, boardgame_status.ID_GAME,
-						giocatorino.boardgame_status.OWNERID, giocatorino.boardgame_status.ID_EXIT, giocatorino.boardgame_status.STATUS
+						giocatorino.boardgame_status.LANGUAGE,giocatorino.boardgame_status.OWNERID, giocatorino.boardgame_status.ID_EXIT, giocatorino.boardgame_status.STATUS
 						FROM giocatorino.boardgame_status, giocatorino.boardgames, giocatorino.users 
 						WHERE boardgame_status.STATUS=? 
 							AND boardgame_status.ID_MAINGAME=0 
@@ -68,7 +68,7 @@
 							WHERE giocatorino.boardgame_status.ID_EXIT=? AND giocatorino.boardgame_status.ID_MAINGAME=0
 							AND giocatorino.boardgame_status.ID_GAME=giocatorino.boardgames.ID</value>
 		<value id="11">SELECT giocatorino.boardgames.NAME, giocatorino.boardgames.thumbnail, giocatorino.users.USERNAME, boardgame_status.ID_GAME,
-						giocatorino.boardgame_status.OWNERID, giocatorino.boardgame_status.ID_EXIT, giocatorino.boardgame_status.STATUS
+						giocatorino.boardgame_status.LANGUAGE,giocatorino.boardgame_status.OWNERID, giocatorino.boardgame_status.ID_EXIT, giocatorino.boardgame_status.STATUS
 						FROM giocatorino.boardgame_status, giocatorino.boardgames, giocatorino.users 
 						WHERE (boardgame_status.STATUS=0 || boardgame_status.STATUS=2) 
 							AND boardgame_status.ID_MAINGAME=0 
