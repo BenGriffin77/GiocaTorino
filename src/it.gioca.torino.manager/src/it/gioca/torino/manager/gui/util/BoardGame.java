@@ -24,6 +24,7 @@ public class BoardGame extends TinyGame {
 	private int maxTime;
 	private int minPlayers;
 	private int maxPlayers;
+	private List<String> alternativeNames;
 	
 	public BoardGame(TinyGame game) {
 		super(game.getGameId(), game.getName(), null);
@@ -206,5 +207,13 @@ public class BoardGame extends TinyGame {
 	public void setPlayers(GamePlayers gp){
 		this.minPlayers = gp.getMinPlayers();
 		this.maxPlayers = gp.getMaxPlayers();
+	}
+
+	public List<String> getAlternativeNames() {
+		return alternativeNames;
+	}
+
+	public void setAlternativeNames(List<String> alternativeNames) {
+		this.alternativeNames = alternativeNames;
 	}
 }

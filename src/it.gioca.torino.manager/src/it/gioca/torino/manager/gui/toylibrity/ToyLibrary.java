@@ -4,6 +4,8 @@ import it.gioca.torino.manager.Config;
 import it.gioca.torino.manager.Messages;
 import it.gioca.torino.manager.Workflow;
 import it.gioca.torino.manager.common.MainForm;
+import it.gioca.torino.manager.common.ThemeManager;
+import it.gioca.torino.manager.common.ThemeManager.COLOR;
 import it.gioca.torino.manager.db.facade.game.AllGameListFacede;
 import it.gioca.torino.manager.db.facade.game.BlockTheGameFacade;
 import it.gioca.torino.manager.db.facade.game.request.AllGameRequest;
@@ -20,6 +22,7 @@ import it.gioca.torino.manager.gui.util.BoardGame;
 import it.gioca.torino.manager.gui.util.ColumnType;
 import it.gioca.torino.manager.gui.util.ColumnType.CTYPE;
 import it.gioca.torino.manager.gui.util.FormUtil;
+import it.gioca.torino.manager.gui.util.LoggerPoints;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +32,8 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.TraverseEvent;
+import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -99,6 +104,14 @@ public class ToyLibrary extends MainForm {
 				Group functions = FormUtil.createAGroup(group, 1, 1, "", true);
 				FormUtil.createLabel(functions, 1, "Filtro:");
 				filter = FormUtil.createText(functions, "");
+				filter.addTraverseListener(new TraverseListener() {
+					
+					@Override
+					public void keyTraversed(TraverseEvent arg0) {
+						if(arg0.detail == SWT.TRAVERSE_RETURN)
+							fillTheTable();
+					}
+				});
 				drawButton(Messages.getString("ToyLibrary.8"), functions, EBUTTON.UPDATE);
 				OUT = drawButton(Messages.getString("ToyLibrary.9"), functions, EBUTTON.OUT, true);
 				OUT.setSelection(true);
@@ -262,7 +275,7 @@ public class ToyLibrary extends MainForm {
 			if(bg.getName().equalsIgnoreCase(gameName) && bg.getOwnerName().equalsIgnoreCase(ownerName)){
 				switch(bg.getStatusGame()){
 				case 0: tryToReserve(bg); break;
-				case 2: freeTheGame(bg); break;
+				case 2: freeTheGame(bg); LoggerPoints.getInstace().save(" Nome gioco: "+bg.getName()+" - Id Documento: "+bg.getExitId()); break;
 				}
 				
 			}
@@ -295,7 +308,7 @@ public class ToyLibrary extends MainForm {
 			request = new GameRequest();
 			request.setIdGame(bg.getGameId());
 			request.setIdExit(0);
-			request.setDemostratorId(1);
+			request.setDemostratorId(0);
 			request.setOwnerId(bg.getOwnerID());
 			request.setStatus(GAMESTATUS.FREE);
 			request.setWithExpansion(bg.isWithExpansions());
@@ -323,22 +336,33 @@ public class ToyLibrary extends MainForm {
 			for(BoardGame bg: games){
 				if(filter.getText()!=""){
 					String text = filter.getText();
-					if(!bg.getName().toLowerCase().contains(text.toLowerCase()))
+					if(!bg.getName().toLowerCase().contains(text.toLowerCase()) && !findIntoAlternativeNames(bg, text.toLowerCase()))
 						continue;
 				}
 				ti = new TableItem(tableGames, SWT.NONE);
 				ti.setText(0, bg.getName());
 				if(bg.getThumbnail()!=null)
 					ti.setImage(1, FormUtil.setImageInTheTable(bg.getThumbnail()));
-				ti.setText(2, bg.getStatusGame()==0? "IN LUDOTECA":bg.getDimostrator());
+				int status = bg.getStatusGame();
+				ti.setText(2, status==0? "IN LUDOTECA":bg.getDimostrator());
 				ti.setText(3, bg.getOwnerName());
 				ti.setText(4, bg.getId_document()+"");
 				ti.setText(5, bg.getLanguage());
+				if(status!=0)
+					ti.setBackground(ThemeManager.getColor(COLOR.CUSTOM3));
 			}
 		}
 		for(TableColumn tc: tableGames.getColumns())
 			tc.pack();
 		loadFilter();
+	}
+	
+	private boolean findIntoAlternativeNames(BoardGame bg, String key){
+		
+		for(String name: bg.getAlternativeNames())
+			if(name.toLowerCase().contains(key))
+				return true;
+		return false;
 	}
 	
 	private void loadFilter() {

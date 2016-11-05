@@ -22,6 +22,11 @@ public class ThemeManager {
 		case GREEN: return device.getSystemColor(SWT.COLOR_GREEN);
 		case DARK_YELLOW: return device.getSystemColor(SWT.COLOR_DARK_YELLOW);
 		case CYAN: return device.getSystemColor(SWT.COLOR_CYAN);
+		// E0FFFF - 224 -255 -255 
+		// C7FFFF 199 255 255 
+		case CUSTOM1: return new Color(device, 199, 255, 255);
+		case CUSTOM2: return new Color(device, 224, 255, 255);
+		case CUSTOM3: return new Color(device, 240, 130, 140);
 		default: return device.getSystemColor(SWT.COLOR_WHITE);
 		}
 	}
@@ -34,6 +39,9 @@ public class ThemeManager {
 		GREEN,
 		HEATERBLUE,
 		DARK_YELLOW,
+		CUSTOM1,
+		CUSTOM2,
+		CUSTOM3,
 		CYAN
 	}
 }

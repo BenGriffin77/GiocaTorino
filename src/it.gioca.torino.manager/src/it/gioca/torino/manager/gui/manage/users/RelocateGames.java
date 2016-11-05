@@ -1,8 +1,13 @@
 package it.gioca.torino.manager.gui.manage.users;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.gioca.torino.manager.Messages;
 import it.gioca.torino.manager.common.MainDialog;
+import it.gioca.torino.manager.db.facade.game.remove.LeaveWithSomeGames;
 import it.gioca.torino.manager.db.facade.game.remove.ListOfGameByUser;
+import it.gioca.torino.manager.db.facade.game.request.RequestLeaveWithSameGames;
 import it.gioca.torino.manager.db.facade.users.request.RequestUser;
 import it.gioca.torino.manager.gui.util.ColumnType;
 import it.gioca.torino.manager.gui.util.ColumnType.CTYPE;
@@ -13,7 +18,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
@@ -24,6 +28,7 @@ public class RelocateGames extends MainDialog{
 
 	private Table tableItems;
 	private String userName;
+	private int userId;
 
 	public RelocateGames(Shell parent) {
 		super(parent);
@@ -101,8 +106,16 @@ public class RelocateGames extends MainDialog{
 	@Override
 	protected void save() {
 		int[] selects = tableItems.getSelectionIndices();
-		if(selects!=null && selects.length !=-1){
-			
+		if(selects!=null && selects.length >0){
+			RequestLeaveWithSameGames request = new RequestLeaveWithSameGames();
+			request.setOwnerId(userId);
+			List<Integer> ids = new ArrayList<Integer>();
+			for(int sel: selects)
+				ids.add(Integer.parseInt(tableItems.getItem(sel).getText(0)));
+			request.setIds(ids);
+			LeaveWithSomeGames lwsg = new LeaveWithSomeGames(request);
+			if(!lwsg.isCorrectExit())
+				System.out.println();
 		}
 	}
 
@@ -120,6 +133,10 @@ public class RelocateGames extends MainDialog{
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+	
+	public void setUserId(int userId){
+		this.userId = userId;
 	}
 
 }

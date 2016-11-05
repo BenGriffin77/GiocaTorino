@@ -91,6 +91,12 @@ public class FinishTheCheckOut extends MainForm {
 			UserListFacade ulf = new UserListFacade(request);
 			String[] users = ulf.getUsers();
 			demostrators = FormUtil.createCombo(group, 1, users);
+			for(int i=0; i<users.length; i++){
+				if(users[i].equalsIgnoreCase(ftcoModel.getBoardGameSelected().getOwnerName())){
+					demostrators.select(i);
+					break;
+				}
+			}
 			drawButton(Messages.getString("FinishTheCheckOut.8"), group, EBUTTON.ADD_DEMOSTRATOR);
 			newDemostrator = FormUtil.createText(group, "Write HERE");
 			newDemostrator.setVisible(false);

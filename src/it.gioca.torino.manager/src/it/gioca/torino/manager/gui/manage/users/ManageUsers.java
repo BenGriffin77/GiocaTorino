@@ -42,6 +42,7 @@ public class ManageUsers extends MainForm {
 	private Button deleteUser;
 	private List<UserStatus> users;
 	private Button notHere;
+	private Button modify;
 
 	public ManageUsers(String stateName, String title) {
 		super(stateName, title);
@@ -61,7 +62,7 @@ public class ManageUsers extends MainForm {
 		centrale.setLayout(gdLayout);
 		centrale.setLayoutData(gdData);
 		centrale.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-		Group group = FormUtil.createAGroup(centrale, 1, 2, "", true);
+		Group group = FormUtil.createAGroup(centrale, 1, 2, "", false);
 		{
 			FormUtil.createLabel(group, 2, Messages.getString("ManageUsers.2"));
 			ColumnType[] columns = {new ColumnType(Messages.getString("ManageUsers.3"), CTYPE.TEXT),
@@ -102,7 +103,10 @@ public class ManageUsers extends MainForm {
 						}
 						else
 							deleteUser.setEnabled(false);
-						notHere.setEnabled(true);
+						text = tableUsers.getItem(sel).getText(1);
+						if(!text.contains("Andato"))
+							notHere.setEnabled(true);
+						modify.setEnabled(true);
 					}
 				}
 				
@@ -129,8 +133,11 @@ public class ManageUsers extends MainForm {
 					
 					deleteUser = drawButton(Messages.getString("ManageUsers.9"), functions, EBUTTON.CANCELLAUTENTE);
 					notHere = drawButton(Messages.getString("ManageUsers.12"), functions, EBUTTON.NONPRESENTE);
+					modify = drawButton(Messages.getString("ManageUsers.15"), functions, EBUTTON.MODIFY);
+					drawButton(Messages.getString("ManageUsers.16"), functions, EBUTTON.ADD);
 					notHere.setEnabled(false);
 					deleteUser.setEnabled(false);
+					modify.setEnabled(false);
 				}
 			}
 		}
@@ -176,6 +183,8 @@ public class ManageUsers extends MainForm {
 				case CLEAR: filter.setText(""); fillTheTable(); break;
 				case CANCELLAUTENTE: deleteUser();break;
 				case NONPRESENTE: notHere(); break;
+				case MODIFY: modify(); break;
+				case ADD: add(); break;
 				default: Workflow.getInstace().next(stateName, eB.toString(), getMainComposite(), getMenuLaterale()); break;
 				}
 			}
@@ -188,6 +197,27 @@ public class ManageUsers extends MainForm {
 		return dummy;
 	}
 
+	protected void add() {
+		
+		Shell shell = Display.getCurrent().getActiveShell();
+		AddUser ad = new AddUser(shell);
+		ad.open();
+		fillTheTable();
+	}
+
+	protected void modify() {
+		
+		if(tableUsers.getSelectionIndex()==-1) 
+			return;
+		TableItem item = tableUsers.getItem(tableUsers.getSelectionIndex());
+		int id = Integer.parseInt(item.getText(3));
+		Shell shell = Display.getCurrent().getActiveShell();
+		RenameUser ru = new RenameUser(shell);
+		ru.setUserId(id);
+		ru.open();
+		fillTheTable();
+	}
+
 	protected void notHere() {
 		
 		if(tableUsers.getSelectionIndex()==-1) 
@@ -195,12 +225,16 @@ public class ManageUsers extends MainForm {
 		Shell shell = Display.getCurrent().getActiveShell();
 		YESNODialog yn = new YESNODialog(shell);
 		TableItem item = tableUsers.getItem(tableUsers.getSelectionIndex());
+		if(item.getText(1).contains("Andato"))
+			return;
 		int id = Integer.parseInt(item.getText(3));
 		if(yn.open(Messages.getString("ManageUsers.13")+" "+item.getText(0)+ " " +Messages.getString("ManageUsers.14"))==Action.YES){
 			if(item.getText(2).equalsIgnoreCase("SI")){
 				RelocateGames rg = new RelocateGames(shell);
 				rg.setUserName(item.getText(0));
+				rg.setUserId(id);
 				rg.open();
+				fillTheTable();
 			}
 			else{
 				for(UserStatus u: users){
@@ -253,7 +287,9 @@ public class ManageUsers extends MainForm {
 		
 		CLEAR,
 		NONPRESENTE,
+		MODIFY,
 		CANCELLAUTENTE,
+		ADD,
 		INDIETRO;
 		
 		public String toString() {

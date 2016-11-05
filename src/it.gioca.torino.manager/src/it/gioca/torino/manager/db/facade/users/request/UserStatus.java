@@ -6,6 +6,8 @@ public class UserStatus {
 	private USTATUS status; 
 	private boolean hasGame;
 	private int userId;
+	private String email;
+	private String realName;
 	
 	public enum USTATUS{
 		
@@ -65,6 +67,30 @@ public class UserStatus {
 	
 	public int getUserId() {
 		return userId;
+	}
+	
+	public void setUserId(int userId){
+		this.userId = userId;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getRealName() {
+		return realName;
+	}
+
+	public void setRealName(String realName) {
+		this.realName = realName;
+	}
+	
+	public void setUserName(String userName){
+		this.username = userName;
 	}
 
 }

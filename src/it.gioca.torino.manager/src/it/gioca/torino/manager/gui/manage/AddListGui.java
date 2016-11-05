@@ -141,7 +141,8 @@ public class AddListGui extends MainForm {
 					}
 				});
 				FormUtil.createLabel(group, 1, "");
-				drawButton(Messages.getString("AddListGui.16"),group, EBUTTON.ADDLIST);
+				Button b = drawButton(Messages.getString("AddListGui.16"),group, EBUTTON.ADDLIST);
+				b.setEnabled(false);
 			}
 			ColumnType[] columns = {new ColumnType(Messages.getString("AddListGui.6"), CTYPE.TEXT),
 					new ColumnType(Messages.getString("AddListGui.7"), CTYPE.TEXT)};

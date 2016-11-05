@@ -41,7 +41,7 @@ public class AllGameListFacede extends ConnectionManager {
 				int gameId;
 				String name;
 				byte[] thumbnail;
-				String user;
+				String user, language;
 				BoardGame bg;
 				int exitId;
 				int ownerId;
@@ -56,6 +56,7 @@ public class AllGameListFacede extends ConnectionManager {
 					ownerId = rset.getInt("OWNERID");
 					id_document = rset.getInt("ID_EXIT");
 					statusGame = rset.getInt("STATUS");
+					language = rset.getString("LANGUAGE");
 					if(image!=null){
 			    		thumbnail = image.getBytes(1, (int)image.length());
 			    		bg = new BoardGame(gameId, name, thumbnail);
@@ -64,6 +65,7 @@ public class AllGameListFacede extends ConnectionManager {
 			    		bg.setOwnerID(ownerId);
 			    		bg.setId_document(id_document);
 			    		bg.setStatusGame(statusGame);
+			    		bg.setLanguage(language);
 			    		games.add(bg);
 			    		image.free();
 			    	}
@@ -72,11 +74,12 @@ public class AllGameListFacede extends ConnectionManager {
 			    		bg.setDimostrator(user);
 			    		bg.setExitId(exitId);
 			    		bg.setOwnerID(ownerId);
+			    		bg.setLanguage(language);
 			    		games.add(bg);
 			    	}
 				}
 			}
-			
+			List<String> alternativeNames;
 			if(games.size()>0)
 				for(BoardGame bg: games){
 					query = SingletonQuery.getInstance().getQuery("BOARDGAME_STATUS", 3);
@@ -99,6 +102,17 @@ public class AllGameListFacede extends ConnectionManager {
 							String ownername = rset.getString("USERNAME");
 							bg.setOwnerName(ownername);
 						}
+					alternativeNames = new ArrayList<String>();
+					query = SingletonQuery.getInstance().getQuery("BOARDGAME_STATUS", 13);
+					pstmt = conn.prepareStatement(query);
+					pstmt.setInt(1, bg.getGameId());
+					rset = pstmt.executeQuery();
+					if(rset!=null)
+						while(rset.next()){
+							String aName = rset.getString("NAME");
+							alternativeNames.add(aName);
+						}
+					bg.setAlternativeNames(alternativeNames);
 				}
 		}catch (SQLException e){
 			e.printStackTrace();

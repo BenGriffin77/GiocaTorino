@@ -21,7 +21,7 @@ public class FindUserState extends ConnectionManager{
 	protected void execute(IRequestDTO request) {
 		
 		mu = new ArrayList<UserStatus>();
-		String ownername;
+		String ownername, email, realName;
 		int status, userId;
 		boolean hasGame;
 		String query = SingletonQuery.getInstance().getQuery("DIMOSTRATORI", 8);
@@ -34,7 +34,12 @@ public class FindUserState extends ConnectionManager{
 					ownername = rset.getString("USERNAME");
 					status = rset.getInt("STATUS");
 					hasGame = rset.getInt("COUNT")>0;
-					mu.add(new UserStatus(ownername, status, hasGame, userId));
+					email = rset.getString("email");
+					realName = rset.getString("realname");
+					UserStatus us = new UserStatus(ownername, status, hasGame, userId);
+					us.setEmail(email);
+					us.setRealName(realName);
+					mu.add(us);
 				}
 		}catch(SQLException e){
 			e.printStackTrace();
