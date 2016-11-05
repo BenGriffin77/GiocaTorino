@@ -80,8 +80,10 @@ public class FindCategory extends ConnectionManager {
 			case PLAYERS: getRsetByCategory(idgame, st); break;
 			}
 		}
-		Collections.sort(categories.subList(1, categories.size()));
-		Collections.sort(designers.subList(1, designers.size()));
+		if(categories.size()>0)
+			Collections.sort(categories.subList(1, categories.size()));
+		if(designers.size()>0)
+			Collections.sort(designers.subList(1, designers.size()));
 	}
 	
 	private void addElements(List<String> downloaded, SearchType type){

@@ -16,7 +16,7 @@ public class GameRequest implements IRequestDTO {
 	
 	private int idExit;
 	
-	private int demostratorId = 1; //Gioca torino standard User
+	private int demostratorId = 0; //Gioca torino standard User
 	
 	public enum GAMESTATUS{
 		

@@ -84,7 +84,7 @@ public class ToyLibrary extends MainForm {
 		centrale.setLayout(gdLayout);
 		centrale.setLayoutData(gdData);
 		centrale.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-		Group group = FormUtil.createAGroup(centrale, 1, 2, "", true);
+		Group group = FormUtil.createAGroup(centrale, 1, 2, "", false);
 		{
 			FormUtil.createLabel(group, 2, Messages.getString("ToyLibrary.4"));
 			ColumnType[] columns = {new ColumnType(Messages.getString("ToyLibrary.5"), CTYPE.TEXT),
@@ -357,7 +357,8 @@ public class ToyLibrary extends MainForm {
 		designersFilter.removeAll();
 		designers = fg.getDesigners();
 		designersFilter.setItems(designers);
-		createArrayPlayer(fg.getMinMaxPlayer()[0], fg.getMinMaxPlayer()[1]);
+		if(fg.getMinMaxPlayer()[0]!=1000)
+			createArrayPlayer(fg.getMinMaxPlayer()[0], fg.getMinMaxPlayer()[1]);
 		for(BoardGame bg : games){
 			int idGame = bg.getGameId();
 			bg.setCategories(fg.getCatById(idGame));

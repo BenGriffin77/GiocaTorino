@@ -17,6 +17,8 @@ import it.gioca.torino.manager.gui.util.FormUtil;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -67,6 +69,26 @@ public class ManageUsers extends MainForm {
 									new ColumnType(Messages.getString("ManageUsers.8"), CTYPE.TEXT),
 									new ColumnType(Messages.getString("ManageUsers.10"), CTYPE.INT)};
 			tableUsers = FormUtil.createTable(group, columns);
+			tableUsers.addMouseListener(new MouseListener() {
+				
+				@Override
+				public void mouseUp(MouseEvent arg0) {
+					
+				}
+				
+				@Override
+				public void mouseDown(MouseEvent arg0) {
+					
+				}
+				
+				@Override
+				public void mouseDoubleClick(MouseEvent arg0) {
+					int sel = tableUsers.getSelectionIndex();
+					if(sel!=-1){
+						notHere();
+					}
+				}
+			});
 			tableUsers.addSelectionListener(new SelectionListener() {
 				
 				@Override
@@ -74,8 +96,10 @@ public class ManageUsers extends MainForm {
 					int sel = tableUsers.getSelectionIndex();
 					if(sel!=-1){
 						String text = tableUsers.getItem(sel).getText(2);
-						if(text.contains("NO") && !tableUsers.getItem(sel).getText(0).equalsIgnoreCase("GIOCA TORINO"))
-							deleteUser.setEnabled(true);
+						if(text.contains("NO") && !tableUsers.getItem(sel).getText(0).equalsIgnoreCase("GIOCA TORINO")){
+							if(!tableUsers.getItem(sel).getText(1).contains("Andato"))
+								deleteUser.setEnabled(true);
+						}
 						else
 							deleteUser.setEnabled(false);
 						notHere.setEnabled(true);
