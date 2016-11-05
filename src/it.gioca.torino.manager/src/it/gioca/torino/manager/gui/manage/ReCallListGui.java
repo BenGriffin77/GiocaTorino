@@ -374,6 +374,7 @@ public class ReCallListGui extends MainForm {
 		public String toString() {
 			
 			switch(this){
+			case UNLOAD: return "unload";
 			case MANAGE: return "finalize";
 			case ADD_LIST: return "newList";
 			case SAVE:

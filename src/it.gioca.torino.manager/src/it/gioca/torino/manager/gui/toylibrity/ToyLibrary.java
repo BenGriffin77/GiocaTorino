@@ -1,5 +1,6 @@
 package it.gioca.torino.manager.gui.toylibrity;
 
+import it.gioca.torino.manager.Config;
 import it.gioca.torino.manager.Messages;
 import it.gioca.torino.manager.Workflow;
 import it.gioca.torino.manager.common.MainForm;
@@ -20,6 +21,7 @@ import it.gioca.torino.manager.gui.util.ColumnType;
 import it.gioca.torino.manager.gui.util.ColumnType.CTYPE;
 import it.gioca.torino.manager.gui.util.FormUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -48,8 +50,15 @@ public class ToyLibrary extends MainForm {
 	private List<BoardGame> games;
 	private CheckOutObjectModel coModel;
 	private Text filter;
-	private Group functions;
 	private Combo categoryFiler;
+	private Combo designersFilter;
+	private Combo lenghtsFilter;
+	
+	private static final String[] LENGHTS = {"BREVE", "MEDIA", "LUNGA"};
+	private String[] designers = {""};
+	private String[] categories = {""};
+	private String[] players = {""};
+	private Combo playersFilter;
 
 	public ToyLibrary(String stateName, String title) {
 		super(stateName, title);
@@ -82,11 +91,12 @@ public class ToyLibrary extends MainForm {
 									new ColumnType(Messages.getString("ToyLibrary.6"), CTYPE.IMAGE),
 									new ColumnType(Messages.getString("ToyLibrary.7"), CTYPE.TEXT),
 									new ColumnType(Messages.getString("ToyLibrary.11"), CTYPE.TEXT),
-									new ColumnType(Messages.getString("ToyLibrary.13"), CTYPE.INT)};
+									new ColumnType(Messages.getString("ToyLibrary.13"), CTYPE.INT),
+									new ColumnType(Messages.getString("ToyLibrary.18"), CTYPE.TEXT)};
 			tableGames = FormUtil.createTable(group, columns);
 			
 			{
-				functions = FormUtil.createAGroup(group, 1, 1, "", true);
+				Group functions = FormUtil.createAGroup(group, 1, 1, "", true);
 				FormUtil.createLabel(functions, 1, "Filtro:");
 				filter = FormUtil.createText(functions, "");
 				drawButton(Messages.getString("ToyLibrary.8"), functions, EBUTTON.UPDATE);
@@ -94,6 +104,130 @@ public class ToyLibrary extends MainForm {
 				OUT.setSelection(true);
 				IN = drawButton(Messages.getString("ToyLibrary.10"), functions, EBUTTON.IN, true);
 				OUT.setSelection(false);
+				
+				FormUtil.createLabel(functions, 1, Messages.getString("ToyLibrary.14"));
+				categoryFiler = FormUtil.createCombo(functions, 1, categories);
+				categoryFiler.addSelectionListener(new SelectionListener() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent arg0) {
+						String category = categoryFiler.getText();
+						tableGames.removeAll();
+						TableItem ti;
+						List<String> newFilter = new ArrayList<String>();
+						for(BoardGame bg: games){
+							if(bg.containsCategory(category)){
+								ti = new TableItem(tableGames, SWT.NONE);
+								ti.setText(0, bg.getName());
+								if(bg.getThumbnail()!=null)
+									ti.setImage(1, FormUtil.setImageInTheTable(bg.getThumbnail()));
+								ti.setText(2, bg.getStatusGame()==0? "IN LUDOTECA":bg.getDimostrator());
+								ti.setText(3, bg.getOwnerName());
+								ti.setText(4, bg.getId_document()+"");
+								newFilter.addAll(bg.getDesigners());
+							}
+						}
+						designersFilter.setItems(getArrayFromList(newFilter));
+					}
+					
+					@Override
+					public void widgetDefaultSelected(SelectionEvent arg0) {
+						
+					}
+				});
+				
+				FormUtil.createLabel(functions, 1, Messages.getString("ToyLibrary.15"));
+				designersFilter = FormUtil.createCombo(functions, 1, designers);
+				designersFilter.addSelectionListener(new SelectionListener() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent arg0) {
+						String designer = designersFilter.getText();
+						tableGames.removeAll();
+						TableItem ti;
+						List<String> newFilter = new ArrayList<String>();
+						for(BoardGame bg: games){
+							if(bg.containsDesigner(designer)){
+								ti = new TableItem(tableGames, SWT.NONE);
+								ti.setText(0, bg.getName());
+								if(bg.getThumbnail()!=null)
+									ti.setImage(1, FormUtil.setImageInTheTable(bg.getThumbnail()));
+								ti.setText(2, bg.getStatusGame()==0? "IN LUDOTECA":bg.getDimostrator());
+								ti.setText(3, bg.getOwnerName());
+								ti.setText(4, bg.getId_document()+"");
+								newFilter.addAll(bg.getCategories());
+							}
+						}
+						categoryFiler.setItems(getArrayFromList(newFilter));
+					}
+					
+					@Override
+					public void widgetDefaultSelected(SelectionEvent arg0) {
+						
+					}
+				});
+				
+				FormUtil.createLabel(functions, 1, Messages.getString("ToyLibrary.16"));
+				lenghtsFilter = FormUtil.createCombo(functions, 1, LENGHTS);
+				lenghtsFilter.addSelectionListener(new SelectionListener() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent arg0) {
+						int idLenght = lenghtsFilter.getSelectionIndex();
+						int min=0, max=0;
+						switch(idLenght){
+						case 0: min =0; 				   max = Config.SHORT_TIME; break;
+						case 1: min = Config.SHORT_TIME;   max = Config.MID_TIME; break;
+						case 2: min = Config.MID_TIME;     max = 1000000; break;
+						}
+						tableGames.removeAll();
+						TableItem ti;
+						for(BoardGame bg: games){
+							if(checkTime(min, max, bg)){
+								ti = new TableItem(tableGames, SWT.NONE);
+								ti.setText(0, bg.getName());
+								if(bg.getThumbnail()!=null)
+									ti.setImage(1, FormUtil.setImageInTheTable(bg.getThumbnail()));
+								ti.setText(2, bg.getStatusGame()==0? "IN LUDOTECA":bg.getDimostrator());
+								ti.setText(3, bg.getOwnerName());
+								ti.setText(4, bg.getId_document()+"");
+							}
+						}
+					}
+					
+					@Override
+					public void widgetDefaultSelected(SelectionEvent arg0) {
+						
+					}
+				});
+				//players
+				FormUtil.createLabel(functions, 1, Messages.getString("ToyLibrary.17"));
+				playersFilter = FormUtil.createCombo(functions, 1, players);
+				playersFilter.addSelectionListener(new SelectionListener() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent arg0) {
+						int value = Integer.parseInt(playersFilter.getText());
+						tableGames.removeAll();
+						TableItem ti;
+						for(BoardGame bg: games){
+							if(value >= bg.getMinPlayers() && value <= bg.getMaxPlayers()){
+								ti = new TableItem(tableGames, SWT.NONE);
+								ti.setText(0, bg.getName());
+								if(bg.getThumbnail()!=null)
+									ti.setImage(1, FormUtil.setImageInTheTable(bg.getThumbnail()));
+								ti.setText(2, bg.getStatusGame()==0? "IN LUDOTECA":bg.getDimostrator());
+								ti.setText(3, bg.getOwnerName());
+								ti.setText(4, bg.getId_document()+"");
+							}
+						}
+					}
+					
+					@Override
+					public void widgetDefaultSelected(SelectionEvent arg0) {
+						
+					}
+				});
 			}
 			tableGames.addMouseListener(new MouseListener() {
 				
@@ -166,7 +300,7 @@ public class ToyLibrary extends MainForm {
 			request.setStatus(GAMESTATUS.FREE);
 			request.setWithExpansion(bg.isWithExpansions());
 			btg = new BlockTheGameFacade(request);
-			if(!btg.isCorrectExit())
+			if(btg.isCorrectExit())
 				fillTheTable();
 		}
 	}
@@ -199,6 +333,7 @@ public class ToyLibrary extends MainForm {
 				ti.setText(2, bg.getStatusGame()==0? "IN LUDOTECA":bg.getDimostrator());
 				ti.setText(3, bg.getOwnerName());
 				ti.setText(4, bg.getId_document()+"");
+				ti.setText(5, bg.getLanguage());
 			}
 		}
 		for(TableColumn tc: tableGames.getColumns())
@@ -209,47 +344,46 @@ public class ToyLibrary extends MainForm {
 	private void loadFilter() {
 		
 		RequestFind request = new RequestFind();
-		request.setType(SearchType.CATEGORY);
+		request.addType(SearchType.CATEGORY);
+		request.addType(SearchType.DESINER);
+		request.addType(SearchType.TIME);
+		request.addType(SearchType.PLAYERS);
 		for(BoardGame bg : games)
 			request.addGameId(bg.getGameId());
 		FindCategory fg = new FindCategory(request);
-		if(categoryFiler==null){
-			FormUtil.createLabel(functions, 1, Messages.getString("ToyLibrary.14"));
-			categoryFiler = FormUtil.createCombo(functions, 1, fg.getElements());
+		categoryFiler.removeAll();
+		categories = fg.getCategories();
+		categoryFiler.setItems(categories);
+		designersFilter.removeAll();
+		designers = fg.getDesigners();
+		designersFilter.setItems(designers);
+		createArrayPlayer(fg.getMinMaxPlayer()[0], fg.getMinMaxPlayer()[1]);
+		for(BoardGame bg : games){
+			int idGame = bg.getGameId();
+			bg.setCategories(fg.getCatById(idGame));
+			bg.setDesigners(fg.getDesById(idGame));
+			bg.setTimes(fg.getTimeById(idGame));
+			bg.setPlayers(fg.getPlayerById(idGame));
 		}
-		else{
-			categoryFiler.removeAll();
-			categoryFiler.setItems(fg.getElements());
+	}
+	
+	private void createArrayPlayer(int min, int max){
+		
+		int size = max - min +1;
+		String[] playersArray = new String[size];
+		for(int i=0; i<playersArray.length; i++){
+			playersArray[i]=min+"";
+			min++;
 		}
-		for(BoardGame bg : games)
-			bg.setCategories(fg.getElementById(bg.getGameId()));
-		categoryFiler.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				String category = categoryFiler.getText();
-				tableGames.removeAll();
-				TableItem ti;
-				for(BoardGame bg: games){
-					if(bg.containsCategory(category)){
-						ti = new TableItem(tableGames, SWT.NONE);
-						ti.setText(0, bg.getName());
-						if(bg.getThumbnail()!=null)
-							ti.setImage(1, FormUtil.setImageInTheTable(bg.getThumbnail()));
-						ti.setText(2, bg.getStatusGame()==0? "IN LUDOTECA":bg.getDimostrator());
-						ti.setText(3, bg.getOwnerName());
-						ti.setText(4, bg.getId_document()+"");
-					}
-				}
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				
-			}
-		});
+		playersFilter.setItems(playersArray);
 	}
 
+	private boolean checkTime(int min, int max, BoardGame bg){
+		
+		int minBg = bg.getMinTime();
+		int maxBg = bg.getMaxTime();
+		return (minBg >= min && maxBg <= max);
+	}
 
 	private Button drawButton(String text, Composite c, final EBUTTON eB){
 		

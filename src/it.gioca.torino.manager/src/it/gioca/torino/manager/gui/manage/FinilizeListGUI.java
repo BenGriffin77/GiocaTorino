@@ -139,7 +139,7 @@ public class FinilizeListGUI extends MainForm {
 			
 			Group expansions = FormUtil.createAGroup(group, 2, 2, Messages.getString("AddListGui.12"), true);
 			ColumnType[] columnsExpansions = {new ColumnType(Messages.getString("AddListGui.7"), CTYPE.INT),
-					new ColumnType(Messages.getString("AddListGui.13"), CTYPE.TEXT)};
+											  new ColumnType(Messages.getString("AddListGui.13"), CTYPE.TEXT)};
 			{
 				tableExpansions = FormUtil.createTable(expansions, columnsExpansions);
 				tableExpansions.addSelectionListener(new SelectionListener() {
@@ -259,6 +259,7 @@ public class FinilizeListGUI extends MainForm {
 			for(BoardGame game: games){
 				TableItem ti = new TableItem(tableGames, SWT.NONE);
 				ti.setText(new String[]{game.getName(),game.getGameId()+""});
+				//FIXME: da import
 				game.setLanguage("ITALIANO");
 				if(newElements)
 					boardsGame.add(new BoardGame(game));
@@ -377,6 +378,7 @@ public class FinilizeListGUI extends MainForm {
 		public String toString() {
 			
 			switch(this){
+			case UNLOAD: return "unload";
 			case LOAD_LIST: return "loadList";
 			case ADD_LIST: return "newList";
 			case MODIFY: return "indietro";

@@ -5,8 +5,8 @@ import it.gioca.torino.manager.db.IRequestDTO;
 public class RequestGetUsers implements IRequestDTO {
 
 	private boolean all;
-	
 	private boolean exit;
+	private String[] users;
 
 	public boolean isAll() {
 		return all;
@@ -22,5 +22,13 @@ public class RequestGetUsers implements IRequestDTO {
 
 	public void setExit(boolean exit) {
 		this.exit = exit;
+	}
+
+	public String[] getUsers() {
+		return users;
+	}
+
+	public void setUsers(String[] users) {
+		this.users = users;
 	}
 }

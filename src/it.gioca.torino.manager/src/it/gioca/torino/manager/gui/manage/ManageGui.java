@@ -491,7 +491,7 @@ public class ManageGui extends MainForm {
 			public void widgetSelected(SelectionEvent arg0) {
 				
 				switch(eB){
-				case UNLOAD: cleanCenter(); drawAddList(true, true); break;
+//				case UNLOAD: cleanCenter(); drawAddList(true, true); break;
 //				case MANAGE: cleanCenter(); drawAddList(true); caricaForm = true; break;
 				case SAVE: {saveForm();
 							if(!caricaForm) 
@@ -536,6 +536,7 @@ public class ManageGui extends MainForm {
 			case MANAGE: return "finalize";
 			case MODIFY:
 			case SAVE:
+			case UNLOAD: return "unload";
 			case LOAD_LIST: return "loadList";
 			case ADD_LIST: return "newList";
 			case INDIETRO: return "indietro"; //$NON-NLS-1$

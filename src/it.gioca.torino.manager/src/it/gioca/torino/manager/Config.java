@@ -12,7 +12,9 @@ public class Config {
 	public static String PASSWORDDB;
 	public static String URL;
 	public static int MAXINT;
-	
+	public static int RESIZEMAX;
+	public static int RESIZEMIN;
+	public static int RESIZEMID;
 	/*
 	 * Search configs
 	 */
@@ -38,7 +40,9 @@ public class Config {
 		PASSWORDDB = prop.getProperty("password");
 		URL = prop.getProperty("url");
 		MAXINT = Integer.parseInt(prop.getProperty("maxNumber"));
-		
+		RESIZEMAX= Integer.parseInt(prop.getProperty("resizeMAX"));
+		RESIZEMID= Integer.parseInt(prop.getProperty("resizeMID"));
+		RESIZEMIN= Integer.parseInt(prop.getProperty("resizeMIN"));
 		
 		SHORT_TIME = Integer.parseInt(prop.getProperty("short_time"));
 		MID_TIME = Integer.parseInt(prop.getProperty("mid_time"));

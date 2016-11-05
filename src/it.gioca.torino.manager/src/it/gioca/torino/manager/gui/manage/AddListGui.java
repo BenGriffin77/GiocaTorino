@@ -98,7 +98,7 @@ public class AddListGui extends MainForm {
 	}
 	
 	private void drawCentrale() {
-		
+		boardsGame = new ArrayList<BoardGame>();
 		Composite centrale =  getMainComposite();
 		GridData gdData = new GridData(GridData.FILL_BOTH);
 		GridLayout gdLayout = new GridLayout();
@@ -431,7 +431,7 @@ public class AddListGui extends MainForm {
 		public String toString() {
 			
 			switch(this){
-			case UNLOAD: return "";
+			case UNLOAD: return "unload";
 			case MANAGE: return "finalize";
 			case LOAD_LIST: return "loadList";
 			case SAVE:

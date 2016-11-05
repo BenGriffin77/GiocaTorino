@@ -1,31 +1,29 @@
 package it.gioca.torino.manager.gui.util;
 
+import it.gioca.torino.manager.db.facade.toylibrary.GamePlayers;
+import it.gioca.torino.manager.db.facade.toylibrary.GameTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class BoardGame extends TinyGame {
 
 	private List<TinyGame> expansions;
-	
 	private String language;
-	
 	private boolean loaded = false;
-	
 	private String dimostrator;
-	
 	private int ownerID;
-	
 	private int exitId;
-	
 	private boolean withExpansions;
-	
 	private String ownerName;
-	
 	private int statusGame;
-	
 	private int id_document;
-	
 	private List<String> categories;
+	private List<String> designers;
+	private int minTime;
+	private int maxTime;
+	private int minPlayers;
+	private int maxPlayers;
 	
 	public BoardGame(TinyGame game) {
 		super(game.getGameId(), game.getName(), null);
@@ -150,4 +148,63 @@ public class BoardGame extends TinyGame {
 		return false;
 	}
 
+	public List<String> getDesigners() {
+		return designers;
+	}
+
+	public void setDesigners(List<String> designers) {
+		this.designers = designers;
+	}
+	
+	public boolean containsDesigner(String value){
+		
+		if(designers==null || designers.size()==0)
+			return false;
+		for(String cat: designers)
+			if(cat.equalsIgnoreCase(value))
+				return true;
+		return false;
+	}
+
+	public int getMinTime() {
+		return minTime;
+	}
+
+	public void setMinTime(int minTime) {
+		this.minTime = minTime;
+	}
+
+	public int getMaxTime() {
+		return maxTime;
+	}
+
+	public void setMaxTime(int maxTime) {
+		this.maxTime = maxTime;
+	}
+	
+	public void setTimes(GameTime gt){
+		this.maxTime = gt.getMaxTime();
+		this.minTime = gt.getMinTime();
+	}
+
+	public int getMinPlayers() {
+		return minPlayers;
+	}
+
+	public void setMinPlayers(int minPlayers) {
+		this.minPlayers = minPlayers;
+	}
+
+	public int getMaxPlayers() {
+		return maxPlayers;
+	}
+
+	public void setMaxPlayers(int maxPlayers) {
+		this.maxPlayers = maxPlayers;
+	}
+
+	public void setPlayers(GamePlayers gp){
+		this.minPlayers = gp.getMinPlayers();
+		this.maxPlayers = gp.getMaxPlayers();
+	}
 }
