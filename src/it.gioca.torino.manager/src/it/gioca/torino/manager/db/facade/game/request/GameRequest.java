@@ -5,18 +5,14 @@ import it.gioca.torino.manager.db.IRequestDTO;
 public class GameRequest implements IRequestDTO {
 
 	private String gameName;
-	
+	private String dimonstratorName;
 	private int idGame;
-	
 	private int ownerId;
-	
 	private boolean withExpansion;
-	
 	private GAMESTATUS status;
-	
 	private int idExit;
-	
 	private int demostratorId = 0; //Gioca torino standard User
+	private boolean rollback;
 	
 	public enum GAMESTATUS{
 		
@@ -79,5 +75,21 @@ public class GameRequest implements IRequestDTO {
 
 	public void setGameName(String gameName) {
 		this.gameName = gameName;
+	}
+
+	public String getDimonstratorName() {
+		return dimonstratorName;
+	}
+
+	public void setDimonstratorName(String dimonstratorName) {
+		this.dimonstratorName = dimonstratorName;
+	}
+
+	public boolean isRollback() {
+		return rollback;
+	}
+
+	public void setRollback(boolean rollback) {
+		this.rollback = rollback;
 	}
 }

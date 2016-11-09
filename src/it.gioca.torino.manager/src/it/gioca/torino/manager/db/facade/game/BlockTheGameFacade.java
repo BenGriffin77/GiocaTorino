@@ -4,12 +4,15 @@ import it.gioca.torino.manager.db.ConnectionManager;
 import it.gioca.torino.manager.db.IRequestDTO;
 import it.gioca.torino.manager.db.SingletonQuery;
 import it.gioca.torino.manager.db.facade.game.request.GameRequest;
+import it.gioca.torino.manager.db.facade.history.GameFreeUpdateHistoryFacade;
 import it.gioca.torino.manager.db.facade.history.GameHistoryFacade;
 
 import java.sql.SQLException;
 
 public class BlockTheGameFacade extends ConnectionManager {
 
+//	private int idHistory;
+	
 	public BlockTheGameFacade(IRequestDTO request) {
 		super(request);
 	}
@@ -33,11 +36,14 @@ public class BlockTheGameFacade extends ConnectionManager {
 				query = SingletonQuery.getInstance().getQuery("BOARDGAME_STATUS", 5);
 				run(req, query, status, idExit);
 				exit=true;
-				
-				if(status==2){
-					GameHistoryFacade ghf = new GameHistoryFacade(req);
-					exit = ghf.isCorrectExit();
-				}
+			}
+			if(status==0 && !req.isRollback()){
+				GameFreeUpdateHistoryFacade gfuh = new GameFreeUpdateHistoryFacade(req);
+				exit = gfuh.isCorrectExit();
+			}
+			if(status==2){
+				GameHistoryFacade ghf = new GameHistoryFacade(req);
+				exit = ghf.isCorrectExit();
 			}
 		}catch (SQLException e){
 			e.printStackTrace();
@@ -56,4 +62,7 @@ public class BlockTheGameFacade extends ConnectionManager {
 		pstmt.execute();
 	}
 	
+//	public int getIdHistory(){
+//		return this.idHistory;
+//	}
 }

@@ -119,6 +119,7 @@ public class FinilizeListGUI extends MainForm {
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
 					remove.setEnabled(true);
+					languages.setEnabled(true);
 					checkParamitersSaveButton();
 					updateTables();
 				}
@@ -161,11 +162,13 @@ public class FinilizeListGUI extends MainForm {
 				functionSave.setEnabled(false);
 				languages = FormUtil.createCombo(moreFunctions, 1);
 				languages.setData("LANGUAGES");
+				languages.setEnabled(false);
 				languages.addSelectionListener(new SelectionListener() {
 					
 					@Override
 					public void widgetSelected(SelectionEvent arg0) {
 						functionSave.setEnabled(true);
+						setLag(languages.getText());
 						checkParamitersSaveButton();
 					}
 					
@@ -176,6 +179,19 @@ public class FinilizeListGUI extends MainForm {
 				});
 				FormUtil.createLabel(moreFunctions, 1, "");
 				FormUtil.createLabel(moreFunctions, 1, "");
+			}
+		}
+	}
+	
+	protected void setLag(String text) {
+		
+		int value = tableGames.getSelectionIndex();
+		if(value==-1)
+			return;
+		int gameId = Integer.parseInt(tableGames.getItem(value).getText(1));
+		for(BoardGame bg: boardsGame){
+			if(gameId == bg.getGameId()){
+				bg.setLanguage(text);
 			}
 		}
 	}
@@ -259,8 +275,8 @@ public class FinilizeListGUI extends MainForm {
 			for(BoardGame game: games){
 				TableItem ti = new TableItem(tableGames, SWT.NONE);
 				ti.setText(new String[]{game.getName(),game.getGameId()+""});
-				//FIXME: da import
-				game.setLanguage("ITALIANO");
+//				//FIXME: da import
+//				game.setLanguage("ITALIANO");
 				if(newElements)
 					boardsGame.add(new BoardGame(game));
 				else

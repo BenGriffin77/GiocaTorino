@@ -29,6 +29,7 @@ public class RelocateGames extends MainDialog{
 	private Table tableItems;
 	private String userName;
 	private int userId;
+	private boolean exit;
 
 	public RelocateGames(Shell parent) {
 		super(parent);
@@ -115,8 +116,12 @@ public class RelocateGames extends MainDialog{
 			request.setIds(ids);
 			LeaveWithSomeGames lwsg = new LeaveWithSomeGames(request);
 			if(!lwsg.isCorrectExit())
-				System.out.println();
+				exit = false;
 		}
+	}
+	
+	public boolean isCorretExit(){
+		return exit;
 	}
 
 	@Override

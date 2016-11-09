@@ -8,6 +8,7 @@ import it.gioca.torino.manager.db.facade.game.request.ManageUserRequest;
 import it.gioca.torino.manager.db.facade.users.FindUserState;
 import it.gioca.torino.manager.db.facade.users.request.UserStatus;
 import it.gioca.torino.manager.db.facade.users.request.UserStatus.USTATUS;
+import it.gioca.torino.manager.gui.InfoDialog;
 import it.gioca.torino.manager.gui.YESNODialog;
 import it.gioca.torino.manager.gui.YESNODialog.Action;
 import it.gioca.torino.manager.gui.util.ColumnType;
@@ -43,6 +44,7 @@ public class ManageUsers extends MainForm {
 	private List<UserStatus> users;
 	private Button notHere;
 	private Button modify;
+	private Button reEnter;
 
 	public ManageUsers(String stateName, String title) {
 		super(stateName, title);
@@ -98,8 +100,10 @@ public class ManageUsers extends MainForm {
 					if(sel!=-1){
 						String text = tableUsers.getItem(sel).getText(2);
 						if(text.contains("NO") && !tableUsers.getItem(sel).getText(0).equalsIgnoreCase("GIOCA TORINO")){
-							if(!tableUsers.getItem(sel).getText(1).contains("Andato"))
+							if(!tableUsers.getItem(sel).getText(1).contains("Andato")){
 								deleteUser.setEnabled(true);
+								reEnter.setEnabled(true);
+							}
 						}
 						else
 							deleteUser.setEnabled(false);
@@ -135,9 +139,11 @@ public class ManageUsers extends MainForm {
 					notHere = drawButton(Messages.getString("ManageUsers.12"), functions, EBUTTON.NONPRESENTE);
 					modify = drawButton(Messages.getString("ManageUsers.15"), functions, EBUTTON.MODIFY);
 					drawButton(Messages.getString("ManageUsers.16"), functions, EBUTTON.ADD);
+					reEnter = drawButton(Messages.getString("ManageUsers.17"), functions, EBUTTON.REENTER);
 					notHere.setEnabled(false);
 					deleteUser.setEnabled(false);
 					modify.setEnabled(false);
+					reEnter.setEnabled(false);
 				}
 			}
 		}
@@ -185,6 +191,7 @@ public class ManageUsers extends MainForm {
 				case NONPRESENTE: notHere(); break;
 				case MODIFY: modify(); break;
 				case ADD: add(); break;
+				case REENTER: reenter();
 				default: Workflow.getInstace().next(stateName, eB.toString(), getMainComposite(), getMenuLaterale()); break;
 				}
 			}
@@ -235,6 +242,10 @@ public class ManageUsers extends MainForm {
 				rg.setUserId(id);
 				rg.open();
 				fillTheTable();
+				if(!rg.isCorretExit()){
+					InfoDialog idag = new InfoDialog(shell);
+					idag.open(Messages.getString("ManageUsers.18"));
+				}
 			}
 			else{
 				for(UserStatus u: users){
@@ -246,6 +257,23 @@ public class ManageUsers extends MainForm {
 						fillTheTable();
 					}
 				}
+			}
+		}
+	}
+	
+	protected void reenter() {
+	
+		if(tableUsers.getSelectionIndex()==-1) 
+			return;
+		TableItem item = tableUsers.getItem(tableUsers.getSelectionIndex());
+		int id = Integer.parseInt(item.getText(3));
+		for(UserStatus u: users){
+			if(u.getUserId() == id){
+				ManageUserRequest request = new ManageUserRequest();
+				u.setStatus(USTATUS.REENTER);
+				request.setUserStatus(u);
+				new ManageUserFacade(request);
+				fillTheTable();
 			}
 		}
 	}
@@ -290,6 +318,7 @@ public class ManageUsers extends MainForm {
 		MODIFY,
 		CANCELLAUTENTE,
 		ADD,
+		REENTER,
 		INDIETRO;
 		
 		public String toString() {

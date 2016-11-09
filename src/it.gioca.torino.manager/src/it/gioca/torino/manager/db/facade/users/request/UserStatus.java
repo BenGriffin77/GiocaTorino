@@ -14,7 +14,8 @@ public class UserStatus {
 		OK,
 		GONE,
 		NOTODAY,
-		TODELETE
+		TODELETE,
+		REENTER
 	}
 	
 	public int getStatusById(){

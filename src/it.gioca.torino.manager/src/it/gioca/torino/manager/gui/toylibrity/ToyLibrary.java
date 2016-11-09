@@ -5,7 +5,6 @@ import it.gioca.torino.manager.Messages;
 import it.gioca.torino.manager.Workflow;
 import it.gioca.torino.manager.common.MainForm;
 import it.gioca.torino.manager.common.ThemeManager;
-import it.gioca.torino.manager.common.ThemeManager.COLOR;
 import it.gioca.torino.manager.db.facade.game.AllGameListFacede;
 import it.gioca.torino.manager.db.facade.game.BlockTheGameFacade;
 import it.gioca.torino.manager.db.facade.game.request.AllGameRequest;
@@ -308,6 +307,7 @@ public class ToyLibrary extends MainForm {
 			request = new GameRequest();
 			request.setIdGame(bg.getGameId());
 			request.setIdExit(0);
+			request.setDimonstratorName(bg.getDimostrator());
 			request.setDemostratorId(0);
 			request.setOwnerId(bg.getOwnerID());
 			request.setStatus(GAMESTATUS.FREE);
@@ -349,7 +349,7 @@ public class ToyLibrary extends MainForm {
 				ti.setText(4, bg.getId_document()+"");
 				ti.setText(5, bg.getLanguage());
 				if(status!=0)
-					ti.setBackground(ThemeManager.getColor(COLOR.CUSTOM3));
+					ti.setBackground(ThemeManager.getCustomColor());
 			}
 		}
 		for(TableColumn tc: tableGames.getColumns())

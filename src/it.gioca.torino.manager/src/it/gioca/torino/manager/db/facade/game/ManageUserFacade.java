@@ -23,6 +23,7 @@ public class ManageUserFacade extends ConnectionManager {
 		switch(u.getStatus()){
 		case OK: return;
 		case TODELETE: query = SingletonQuery.getInstance().getQuery("DIMOSTRATORI", 9); break;
+		case REENTER:
 		case GONE:
 		case NOTODAY: query = SingletonQuery.getInstance().getQuery("DIMOSTRATORI", 10); break;
 		}
@@ -31,6 +32,7 @@ public class ManageUserFacade extends ConnectionManager {
 			
 			switch(u.getStatus()){
 			case TODELETE: pstmt.setInt(1, u.getUserId()); break;
+			case REENTER:
 			case GONE:
 			case NOTODAY: {
 				pstmt.setInt(1, u.getStatusById());

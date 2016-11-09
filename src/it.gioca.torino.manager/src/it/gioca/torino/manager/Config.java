@@ -15,6 +15,13 @@ public class Config {
 	public static int RESIZEMAX;
 	public static int RESIZEMIN;
 	public static int RESIZEMID;
+	public static int[] CUSTOM1 = new int[3];
+	public static int[] CUSTOM2 = new int[3];
+	public static int[] CUSTOM3 = new int[3];
+	public static int SELECT;
+	public static boolean ALTERNATIVE_HISTORY;
+	public static boolean ALTERNATIVE_FIND_USER;
+	public static int MAXDIALOGMULTI;
 	/*
 	 * Search configs
 	 */
@@ -46,5 +53,20 @@ public class Config {
 		
 		SHORT_TIME = Integer.parseInt(prop.getProperty("short_time"));
 		MID_TIME = Integer.parseInt(prop.getProperty("mid_time"));
+		
+		ALTERNATIVE_HISTORY = Boolean.parseBoolean(prop.getProperty("alt_history", "false"));
+		ALTERNATIVE_FIND_USER = Boolean.parseBoolean(prop.getProperty("alt_find_user", "false"));
+		for(int i=1; i<4; i++){
+			String[] values = prop.getProperty("CUSTOM"+i).split(",");
+			for(int j=0; j<values.length; j++){
+				switch(i){
+				case 1: CUSTOM1[j] = Integer.parseInt(values[j]); break;
+				case 2: CUSTOM2[j] = Integer.parseInt(values[j]); break;
+				case 3: CUSTOM3[j] = Integer.parseInt(values[j]); break;
+				}
+			}
+		}
+		SELECT = Integer.parseInt(prop.getProperty("select"));
+		MAXDIALOGMULTI = Integer.parseInt(prop.getProperty("maxDialogMulti"));
 	}
 }

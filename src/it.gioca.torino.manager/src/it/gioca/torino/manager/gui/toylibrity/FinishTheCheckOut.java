@@ -33,7 +33,9 @@ import it.gioca.torino.manager.db.facade.toylibrary.RetriveAllUsedExitIdFacade;
 import it.gioca.torino.manager.db.facade.toylibrary.UpdateIdExit;
 import it.gioca.torino.manager.db.facade.users.AddUserFacade;
 import it.gioca.torino.manager.db.facade.users.FindIDUserFacade;
+import it.gioca.torino.manager.db.facade.users.UserHistoryFindFacade;
 import it.gioca.torino.manager.db.facade.users.UserListFacade;
+import it.gioca.torino.manager.db.facade.users.request.RequestFindHistory;
 import it.gioca.torino.manager.db.facade.users.request.RequestGetUsers;
 import it.gioca.torino.manager.db.facade.users.request.RequestUser;
 import it.gioca.torino.manager.gui.util.FormUtil;
@@ -90,11 +92,22 @@ public class FinishTheCheckOut extends MainForm {
 			request.setAll(true);
 			UserListFacade ulf = new UserListFacade(request);
 			String[] users = ulf.getUsers();
-			demostrators = FormUtil.createCombo(group, 1, users);
-			for(int i=0; i<users.length; i++){
-				if(users[i].equalsIgnoreCase(ftcoModel.getBoardGameSelected().getOwnerName())){
-					demostrators.select(i);
-					break;
+			if(Config.ALTERNATIVE_FIND_USER){
+				RequestFindHistory req = new RequestFindHistory();
+				req.setUsers(users);
+				req.setGameId(ftcoModel.getBoardGameSelected().getGameId());
+				req.setOwner(ftcoModel.getBoardGameSelected().getOwnerName());
+				UserHistoryFindFacade uhff = new UserHistoryFindFacade(req);
+				demostrators = FormUtil.createCombo(group, 1, uhff.getUsers());
+				demostrators.select(0);
+			}
+			else{
+				demostrators = FormUtil.createCombo(group, 1, users);
+				for(int i=0; i<users.length; i++){
+					if(users[i].equalsIgnoreCase(ftcoModel.getBoardGameSelected().getOwnerName())){
+						demostrators.select(i);
+						break;
+					}
 				}
 			}
 			drawButton(Messages.getString("FinishTheCheckOut.8"), group, EBUTTON.ADD_DEMOSTRATOR);
@@ -177,6 +190,7 @@ public class FinishTheCheckOut extends MainForm {
 		request.setStatus(GAMESTATUS.FREE);
 		request.setOwnerId(ftcoModel.getBoardGameSelected().getOwnerID());
 		request.setWithExpansion(ftcoModel.getBoardGameSelected().isWithExpansions());
+		request.setRollback(true);
 		BlockTheGameFacade btg = new BlockTheGameFacade(request);
 		return btg.isCorrectExit();
 	}
@@ -190,7 +204,7 @@ public class FinishTheCheckOut extends MainForm {
 		request.setWithExpansion(ftcoModel.getBoardGameSelected().isWithExpansions());
 		String demoName = demostrators.getText();
 		RequestUser requestU = new RequestUser();
-		requestU.setUserName(demoName);
+		requestU.setUserName(demoName.replace("P* ", "").replace("D* ", ""));
 		FindIDUserFacade fiu = new FindIDUserFacade(requestU);
 		request.setDemostratorId(fiu.getId());
 		int idExit = Integer.parseInt(exitId.getText());

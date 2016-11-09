@@ -24,7 +24,7 @@ public class LeaveWithSomeGames extends ConnectionManager {
 				pstmt = conn.prepareStatement(query);
 				pstmt.setInt(1, req.getOwnerId());
 				pstmt.setInt(2, idGame);
-				pstmt.execute();
+				rset = pstmt.executeQuery();
 				if(rset!=null)
 					while(rset.next()){
 						int status = rset.getInt("STATUS");

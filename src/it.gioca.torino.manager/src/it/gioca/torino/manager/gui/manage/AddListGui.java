@@ -152,6 +152,7 @@ public class AddListGui extends MainForm {
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
 					remove.setEnabled(true);
+					languages.setEnabled(true);
 					checkParamitersSaveButton();
 					updateTables();
 				}
@@ -194,11 +195,13 @@ public class AddListGui extends MainForm {
 				functionSave.setEnabled(false);
 				languages = FormUtil.createCombo(moreFunctions, 1);
 				languages.setData("LANGUAGES");
+				languages.setEnabled(false);
 				languages.addSelectionListener(new SelectionListener() {
 					
 					@Override
 					public void widgetSelected(SelectionEvent arg0) {
 						functionSave.setEnabled(true);
+						setLag(languages.getText());
 						checkParamitersSaveButton();
 					}
 					
@@ -213,6 +216,19 @@ public class AddListGui extends MainForm {
 		}
 	}
 	
+	protected void setLag(String text) {
+		
+		int value = tableGames.getSelectionIndex();
+		if(value==-1)
+			return;
+		int gameId = Integer.parseInt(tableGames.getItem(value).getText(1));
+		for(BoardGame bg: boardsGame){
+			if(gameId == bg.getGameId()){
+				bg.setLanguage(text);
+			}
+		}
+	}
+
 	private void updateTables(){
 		
 		int value = tableGames.getSelectionIndex();

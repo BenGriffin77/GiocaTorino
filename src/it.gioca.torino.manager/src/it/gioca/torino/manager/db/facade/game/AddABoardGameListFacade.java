@@ -65,6 +65,7 @@ public class AddABoardGameListFacade extends ConnectionManager {
 		pstmt.setInt(1, userId);
 		pstmt.setInt(2, bg.getGameId());
 		pstmt.setInt(3, 1);
+//		pstmt.setString(4, bg.getLanguage());
 		pstmt.setString(4, bg.getLanguage()==null?"ITALIANO":bg.getLanguage());
 		pstmt.setInt(5, 0);
 		pstmt.execute();

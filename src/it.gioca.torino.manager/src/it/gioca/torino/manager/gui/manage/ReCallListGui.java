@@ -160,6 +160,7 @@ public class ReCallListGui extends MainForm {
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
 					remove.setEnabled(true);
+					languages.setEnabled(true);
 					checkParamitersSaveButton();
 					updateTables();
 				}
@@ -202,11 +203,13 @@ public class ReCallListGui extends MainForm {
 				functionSave.setEnabled(false);
 				languages = FormUtil.createCombo(moreFunctions, 1);
 				languages.setData("LANGUAGES");
+				languages.setEnabled(false);
 				languages.addSelectionListener(new SelectionListener() {
 					
 					@Override
 					public void widgetSelected(SelectionEvent arg0) {
 						functionSave.setEnabled(true);
+						setLag(languages.getText());
 						checkParamitersSaveButton();
 					}
 					
@@ -221,6 +224,19 @@ public class ReCallListGui extends MainForm {
 		}
 	}
 	
+	protected void setLag(String text) {
+		
+		int value = tableGames.getSelectionIndex();
+		if(value==-1)
+			return;
+		int gameId = Integer.parseInt(tableGames.getItem(value).getText(1));
+		for(BoardGame bg: boardsGame){
+			if(gameId == bg.getGameId()){
+				bg.setLanguage(text);
+			}
+		}
+	}
+	
 	private void addItemsToTheTable(List<BoardGame> games, boolean newElements) {
 		
 		if(games==null)
@@ -230,7 +246,7 @@ public class ReCallListGui extends MainForm {
 			for(BoardGame game: games){
 				TableItem ti = new TableItem(tableGames, SWT.NONE);
 				ti.setText(new String[]{game.getName(),game.getGameId()+""});
-				game.setLanguage("ITALIANO");
+//				game.setLanguage(game.getLanguage()==null || game.getLanguage().equalsIgnoreCase("")? "ITALIANO":game.getLanguage());
 				if(newElements)
 					boardsGame.add(new BoardGame(game));
 				else

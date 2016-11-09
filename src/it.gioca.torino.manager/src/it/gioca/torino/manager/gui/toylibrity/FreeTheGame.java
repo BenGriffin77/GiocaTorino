@@ -137,7 +137,8 @@ public class FreeTheGame extends MainForm {
 				request = new GameRequest();
 				request.setIdGame(bg.getGameId());
 				request.setIdExit(0);
-				request.setDemostratorId(0);
+				request.setDimonstratorName(bg.getDimostrator());
+//				request.setDemostratorId(bg.getDimostrator());
 				request.setOwnerId(bg.getOwnerID());
 				request.setStatus(GAMESTATUS.FREE);
 				request.setWithExpansion(bg.isWithExpansions());
