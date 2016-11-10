@@ -29,7 +29,7 @@ public class RelocateGames extends MainDialog{
 	private Table tableItems;
 	private String userName;
 	private int userId;
-	private boolean exit;
+	private boolean exit=true;
 
 	public RelocateGames(Shell parent) {
 		super(parent);

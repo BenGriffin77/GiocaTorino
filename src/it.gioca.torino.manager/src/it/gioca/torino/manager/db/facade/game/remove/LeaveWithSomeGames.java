@@ -48,7 +48,7 @@ public class LeaveWithSomeGames extends ConnectionManager {
 			pstmt.setInt(1, 2);
 			pstmt.setInt(2, req.getOwnerId());
 			pstmt.executeUpdate();
-			
+			exit=true;
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
