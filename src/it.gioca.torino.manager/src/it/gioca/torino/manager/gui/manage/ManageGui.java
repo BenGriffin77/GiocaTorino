@@ -82,7 +82,7 @@ public class ManageGui extends MainForm {
 	
 	
 	
-	private void checkParamitersSaveButton(){
+	private void checkParametersSaveButton(){
 		
 		if(editedForm && save !=null && !save.isDisposed()){
 			if(demonstrator!=null && !demonstrator.isDisposed())
@@ -105,7 +105,7 @@ public class ManageGui extends MainForm {
 		FindGameDialog fgd = new FindGameDialog(shell);
 		fgd.open();
 		addItemsToTheTable(fgd.getGames(), true);
-		checkParamitersSaveButton();
+		checkParametersSaveButton();
 	}
 	
 	
@@ -133,7 +133,7 @@ public class ManageGui extends MainForm {
 		String text = languages.getText();
 		game.setLanguage(text);
 		editedForm=true;
-		checkParamitersSaveButton();
+		checkParametersSaveButton();
 		if(uploadGames!=null && !uploadGames.isDisposed())
 			uploadGames.setEnabled(false);
 	}
@@ -164,7 +164,7 @@ public class ManageGui extends MainForm {
 		editedForm = true;
 		for(TableColumn tc: tableGames.getColumns())
 			tc.pack();
-		checkParamitersSaveButton();
+		checkParametersSaveButton();
 		if(forceRemove!=null && !forceRemove.isDisposed()){
 			if(canRemoveItems==true){
 				forceRemove.setEnabled(false);

@@ -114,10 +114,10 @@
 						WHERE giocatorino.boardgame_status.ID_GAME=giocatorino.boardgames.ID 
 						AND giocatorino.boardgames.EXPANSION=0 AND giocatorino.users.USERID = giocatorino.boardgame_status.OWNERID
 						%CONDITIONS%</value>
-		<value id="1">SELECT giocatorino.boardgame_catogory.CATEGORY_NAME 
-						FROM giocatorino.boardgame_catogory, giocatorino.category_fkey
+		<value id="1">SELECT giocatorino.boardgame_category.CATEGORY_NAME 
+						FROM giocatorino.boardgame_category, giocatorino.category_fkey
 						WHERE giocatorino.category_fkey.ID_GAME = ? 
-						AND giocatorino.category_fkey.ID_CATEGORY = giocatorino.boardgame_catogory.ID_CATEGORY</value>
+						AND giocatorino.category_fkey.ID_CATEGORY = giocatorino.boardgame_category.ID_CATEGORY</value>
 		<value id="2">SELECT giocatorino.boardgame_designer.DESIGNER_NAME
 						FROM giocatorino.boardgame_designer, giocatorino.designer_fkey
 						WHERE giocatorino.designer_fkey.ID_GAME = ? 
@@ -153,13 +153,13 @@
 		<value id="6">SELECT MAX(ID_DESIGNER) AS MAX from giocatorino.boardgame_designer</value>
 		
 		<value id="7">SELECT ID, giocatorino.boardgames.CATEGORY AS NAMES FROM giocatorino.boardgames WHERE giocatorino.boardgames.CATEGORY!='NULL' LIMIT 1000000</value>
-		<value id="8">INSERT INTO boardgame_catogory (ID_CATEGORY, CATEGORY_NAME) VALUES(?,?)</value>
+		<value id="8">INSERT INTO boardgame_category (ID_CATEGORY, CATEGORY_NAME) VALUES(?,?)</value>
 		<value id="9">INSERT INTO category_fkey (ID_GAME, ID_CATEGORY) VALUES(?,?)</value>
-		<value id="10">SELECT ID_CATEGORY FROM giocatorino.boardgame_catogory WHERE CATEGORY_NAME = ?</value>
-		<value id="11">SELECT MAX(ID_CATEGORY) AS MAX from giocatorino.boardgame_catogory</value>
+		<value id="10">SELECT ID_CATEGORY FROM giocatorino.boardgame_category WHERE CATEGORY_NAME = ?</value>
+		<value id="11">SELECT MAX(ID_CATEGORY) AS MAX from giocatorino.boardgame_category</value>
 	</query>
 	<query name="SEARCH">
-	    <value id="0">SELECT B.CATEGORY_NAME from giocatorino.boardgame_catogory B, giocatorino.category_fkey F	WHERE B.ID_CATEGORY = F.ID_CATEGORY	AND F.ID_GAME=?</value>
+	    <value id="0">SELECT B.CATEGORY_NAME from giocatorino.boardgame_category B, giocatorino.category_fkey F	WHERE B.ID_CATEGORY = F.ID_CATEGORY	AND F.ID_GAME=?</value>
 	    <value id="1">SELECT D.DESIGNER_NAME from giocatorino.boardgame_designer D, giocatorino.designer_fkey F WHERE D.ID_DESIGNER = F.ID_DESIGNER AND F.ID_GAME=?</value>
 	    <value id="2">SELECT B.MAXTIME, B.MINTIME FROM giocatorino.boardgames B WHERE B.ID =?</value>
 	    <value id="3">SELECT B.MINPL, B.MAXPL FROM giocatorino.boardgames B WHERE ID =?;</value>

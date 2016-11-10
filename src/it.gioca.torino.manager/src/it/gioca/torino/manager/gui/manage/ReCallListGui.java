@@ -161,7 +161,7 @@ public class ReCallListGui extends MainForm {
 				public void widgetSelected(SelectionEvent arg0) {
 					remove.setEnabled(true);
 					languages.setEnabled(true);
-					checkParamitersSaveButton();
+					checkParametersSaveButton();
 					updateTables();
 				}
 				
@@ -189,7 +189,7 @@ public class ReCallListGui extends MainForm {
 					@Override
 					public void widgetSelected(SelectionEvent arg0) {
 						functionSave.setEnabled(true);
-						checkParamitersSaveButton();
+						checkParametersSaveButton();
 					}
 					
 					@Override
@@ -210,7 +210,7 @@ public class ReCallListGui extends MainForm {
 					public void widgetSelected(SelectionEvent arg0) {
 						functionSave.setEnabled(true);
 						setLag(languages.getText());
-						checkParamitersSaveButton();
+						checkParametersSaveButton();
 					}
 					
 					@Override
@@ -258,10 +258,10 @@ public class ReCallListGui extends MainForm {
 		}
 		for(TableColumn tc: tableGames.getColumns())
 			tc.pack();
-		checkParamitersSaveButton();
+		checkParametersSaveButton();
 	}
 	
-	private void checkParamitersSaveButton(){
+	private void checkParametersSaveButton(){
 		
 		save.setEnabled(editedForm);
 	}
@@ -274,7 +274,7 @@ public class ReCallListGui extends MainForm {
 		fgd.open();
 		addItemsToTheTable(fgd.getGames(), true);
 		editedForm = true;
-		checkParamitersSaveButton();
+		checkParametersSaveButton();
 	}
 	
 	private void removeSelection(){
@@ -298,7 +298,7 @@ public class ReCallListGui extends MainForm {
 		tableGames.remove(index);
 		tableExpansions.removeAll();
 		editedForm = true;
-		checkParamitersSaveButton();
+		checkParametersSaveButton();
 	}
 	
 	private void saveSelections(){
@@ -325,7 +325,7 @@ public class ReCallListGui extends MainForm {
 		String text = languages.getText();
 		game.setLanguage(text);
 		editedForm=true;
-		checkParamitersSaveButton();
+		checkParametersSaveButton();
 	}
 	
 	private void saveForm() {

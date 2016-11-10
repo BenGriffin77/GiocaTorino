@@ -32,7 +32,7 @@
 		<transition id="finalize" to="Finalize"/>
 		<transition id="unload" to="Unload"/>
 	</state>
-	<state id="Finalize" class="it.gioca.torino.manager.gui.manage.FinilizeListGUI" title="Finalize the list">
+	<state id="Finalize" class="it.gioca.torino.manager.gui.manage.FinalizeListGUI" title="Finalize the list">
 		<transition id="indietro" to="start"/>
 		<transition id="newList" to="AddList"/>
 		<transition id="loadList" to="LoadList"/>

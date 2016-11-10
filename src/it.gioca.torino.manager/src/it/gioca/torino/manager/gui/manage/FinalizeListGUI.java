@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-public class FinilizeListGUI extends MainForm {
+public class FinalizeListGUI extends MainForm {
 
 	private Combo user;
 	private Table tableGames;
@@ -52,7 +52,7 @@ public class FinilizeListGUI extends MainForm {
 	private Button uploadGames;
 	private boolean editedForm;
 	
-	public FinilizeListGUI(String stateName, String title) {
+	public FinalizeListGUI(String stateName, String title) {
 		super(stateName, title);
 	}
 
@@ -98,7 +98,7 @@ public class FinilizeListGUI extends MainForm {
 						addItemsToTheTable(boardsGame, false);
 						if(tableExpansions!=null && !tableExpansions.isDisposed())
 							tableExpansions.removeAll();
-						checkParamitersSaveButton();
+						checkParametersSaveButton();
 						if(functionSave!=null && !functionSave.isDisposed())
 							functionSave.setEnabled(false);
 						if(uploadGames!=null && !uploadGames.isDisposed())
@@ -121,7 +121,7 @@ public class FinilizeListGUI extends MainForm {
 				public void widgetSelected(SelectionEvent arg0) {
 					remove.setEnabled(true);
 					languages.setEnabled(true);
-					checkParamitersSaveButton();
+					checkParametersSaveButton();
 					updateTables();
 				}
 				
@@ -149,7 +149,7 @@ public class FinilizeListGUI extends MainForm {
 					@Override
 					public void widgetSelected(SelectionEvent arg0) {
 						functionSave.setEnabled(true);
-						checkParamitersSaveButton();
+						checkParametersSaveButton();
 					}
 					
 					@Override
@@ -170,7 +170,7 @@ public class FinilizeListGUI extends MainForm {
 					public void widgetSelected(SelectionEvent arg0) {
 						functionSave.setEnabled(true);
 						setLag(languages.getText());
-						checkParamitersSaveButton();
+						checkParametersSaveButton();
 					}
 					
 					@Override
@@ -250,7 +250,7 @@ public class FinilizeListGUI extends MainForm {
 		}
 	}
 	
-	private void checkParamitersSaveButton(){
+	private void checkParametersSaveButton(){
 		
 		uploadGames.setEnabled(editedForm);
 	}
@@ -289,7 +289,7 @@ public class FinilizeListGUI extends MainForm {
 		editedForm = true;
 		for(TableColumn tc: tableGames.getColumns())
 			tc.pack();
-		checkParamitersSaveButton();
+		checkParametersSaveButton();
 	}
 	
 	private void findGame(){
@@ -299,7 +299,7 @@ public class FinilizeListGUI extends MainForm {
 		FindGameDialog fgd = new FindGameDialog(shell);
 		fgd.open();
 		addItemsToTheTable(fgd.getGames(), true);
-		checkParamitersSaveButton();
+		checkParametersSaveButton();
 	}
 	
 	private void saveSelections(){
@@ -326,7 +326,7 @@ public class FinilizeListGUI extends MainForm {
 		String text = languages.getText();
 		game.setLanguage(text);
 		editedForm=true;
-		checkParamitersSaveButton();
+		checkParametersSaveButton();
 		if(uploadGames!=null && !uploadGames.isDisposed())
 			uploadGames.setEnabled(false);
 	}
@@ -376,7 +376,7 @@ public class FinilizeListGUI extends MainForm {
 		tableGames.remove(index);
 		tableExpansions.removeAll();
 		editedForm = true;
-		checkParamitersSaveButton();
+		checkParametersSaveButton();
 	}
 	
 	private enum EBUTTON{

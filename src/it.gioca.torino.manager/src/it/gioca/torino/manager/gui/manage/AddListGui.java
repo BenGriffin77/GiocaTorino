@@ -118,7 +118,7 @@ public class AddListGui extends MainForm {
 					@Override
 					public void focusLost(FocusEvent arg0) {
 						demonstrator.setBackground(YELLOW);
-						checkParamitersSaveButton();
+						checkParametersSaveButton();
 						selectedName = false;
 					}
 					
@@ -153,7 +153,7 @@ public class AddListGui extends MainForm {
 				public void widgetSelected(SelectionEvent arg0) {
 					remove.setEnabled(true);
 					languages.setEnabled(true);
-					checkParamitersSaveButton();
+					checkParametersSaveButton();
 					updateTables();
 				}
 				
@@ -181,7 +181,7 @@ public class AddListGui extends MainForm {
 					@Override
 					public void widgetSelected(SelectionEvent arg0) {
 						functionSave.setEnabled(true);
-						checkParamitersSaveButton();
+						checkParametersSaveButton();
 					}
 					
 					@Override
@@ -202,7 +202,7 @@ public class AddListGui extends MainForm {
 					public void widgetSelected(SelectionEvent arg0) {
 						functionSave.setEnabled(true);
 						setLag(languages.getText());
-						checkParamitersSaveButton();
+						checkParametersSaveButton();
 					}
 					
 					@Override
@@ -290,7 +290,7 @@ public class AddListGui extends MainForm {
 		editedForm = true;
 		for(TableColumn tc: tableGames.getColumns())
 			tc.pack();
-		checkParamitersSaveButton();
+		checkParametersSaveButton();
 	}
 	
 	private void findGame(){
@@ -300,7 +300,7 @@ public class AddListGui extends MainForm {
 		FindGameDialog fgd = new FindGameDialog(shell);
 		fgd.open();
 		addItemsToTheTable(fgd.getGames(), true);
-		checkParamitersSaveButton();
+		checkParametersSaveButton();
 	}
 	
 	private void removeSelection(){
@@ -391,7 +391,7 @@ public class AddListGui extends MainForm {
 		String text = languages.getText();
 		game.setLanguage(text);
 		editedForm=true;
-		checkParamitersSaveButton();
+		checkParametersSaveButton();
 	}
 	
 	private void saveForm() {
@@ -422,7 +422,7 @@ public class AddListGui extends MainForm {
 		}
 	}
 	
-	private void checkParamitersSaveButton(){
+	private void checkParametersSaveButton(){
 		
 		if(editedForm){
 //			if(demonstrator!=null && !demonstrator.isDisposed())
