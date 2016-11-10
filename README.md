@@ -8,6 +8,5 @@ Modificate query per includere LANGUAGE //
 Aggiunta colonna LANGUAGE nei preloads //
 fixate PK su tabelle dinamiche
 
-TODO:
-fix Widgets disposed //
-game.getLanguage()
+#10.11.2016
+Final commit on README for 1.0 Release
