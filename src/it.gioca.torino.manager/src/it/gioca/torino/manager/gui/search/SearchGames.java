@@ -1,6 +1,5 @@
 package it.gioca.torino.manager.gui.search;
 
-import java.util.List;
 
 import it.gioca.torino.manager.Messages;
 import it.gioca.torino.manager.Workflow;
@@ -15,11 +14,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
 
 public class SearchGames extends MainForm {
 
-	private List<FullBoardGame> games;
 	
 	public SearchGames(String stateName, String title) {
 		super(stateName, title);
@@ -35,7 +32,6 @@ public class SearchGames extends MainForm {
 		centrale.setLayoutData(gdData);
 		centrale.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 		{
-			Group group = FormUtil.createGenGroup(getMainComposite(), 1, 2, Messages.getString("SearchGames.1"), true);
 		}
 	}
 	

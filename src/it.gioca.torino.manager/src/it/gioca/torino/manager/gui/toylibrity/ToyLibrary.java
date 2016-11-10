@@ -92,7 +92,7 @@ public class ToyLibrary extends MainForm {
 		{
 			FormUtil.createLabel(group, 2, Messages.getString("ToyLibrary.4"));
 			ColumnType[] columns = {new ColumnType(Messages.getString("ToyLibrary.5"), CTYPE.TEXT),
-									new ColumnType(Messages.getString("ToyLibrary.15"), CTYPE.TEXT),
+//									new ColumnType(Messages.getString("ToyLibrary.15"), CTYPE.TEXT),
 									new ColumnType(Messages.getString("ToyLibrary.6"), CTYPE.IMAGE),
 									new ColumnType(Messages.getString("ToyLibrary.7"), CTYPE.TEXT),
 									new ColumnType(Messages.getString("ToyLibrary.11"), CTYPE.TEXT),

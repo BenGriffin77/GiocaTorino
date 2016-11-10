@@ -26,7 +26,6 @@ public class BoardGame extends TinyGame {
 	private int maxPlayers;
 	private List<String> alternativeNames;
 	
-	private List<String> categories;
 	
 	public BoardGame(TinyGame game) {
 		super(game.getGameId(), game.getName(), null);

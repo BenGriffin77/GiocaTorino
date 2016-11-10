@@ -68,22 +68,4 @@ public class AddBoardGamesToLibraryFacade extends ConnectionManager {
 		}
 	}
 
-	private void delete(BoardGame bg, int userId) throws SQLException{
-		
-		String query = SingletonQuery.getInstance().getQuery("PREPARED_GAMES",5);
-		pstmt = conn.prepareStatement(query);
-//		pstmt.setInt(1, bg.getGameId());
-		pstmt.setInt(1, userId);
-		pstmt.execute();
-//		cleanOld(bg, userId);
-	}
-
-//	private void cleanOld(BoardGame bg, int userId) throws SQLException{
-//		
-//		String query = SingletonQuery.getInstance().getQuery("PREPARED_GAMES",2);
-//		pstmt = conn.prepareStatement(query);
-//		pstmt.setInt(1, bg.getGameId());
-//		pstmt.setInt(2, userId);
-//		pstmt.execute();
-//	}
 }

@@ -45,13 +45,11 @@ public class FindAvabileGameFacade extends ConnectionManager {
 			if(rset!=null){
 				int idGame;
 				String name;
-				String language;
 				byte[] thumbnail;
 				BoardGame bg;
 				while(rset.next()){
 					idGame = rset.getInt("ID_GAME");
 					name = rset.getString("NAME");
-					language = rset.getString("LANGUAGE");
 					Blob image = rset.getBlob("thumbnail");
 					if(image!=null){
 			    		thumbnail = image.getBytes(1, (int)image.length());

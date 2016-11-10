@@ -40,7 +40,6 @@ public class AllGameListFacede extends ConnectionManager {
 			if(rset!=null){
 				int gameId;
 				String name;
-				String language;
 				byte[] thumbnail;
 				String user, language;
 				BoardGame bg;

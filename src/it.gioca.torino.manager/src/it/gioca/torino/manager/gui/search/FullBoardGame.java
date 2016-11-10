@@ -1,6 +1,5 @@
 package it.gioca.torino.manager.gui.search;
 
-import java.util.List;
 
 import it.gioca.torino.manager.gui.util.BoardGame;
 
@@ -16,7 +15,6 @@ public class FullBoardGame extends BoardGame {
 	
 	private int age;
 	
-	private List<Category> categories;
 	
 	public FullBoardGame(int gameId, String name, byte[] thumbnail) {
 		super(gameId, name, thumbnail);
