@@ -54,7 +54,7 @@ public class ToyLibrary extends MainForm {
 	private List<BoardGame> games;
 	private CheckOutObjectModel coModel;
 	private Text filter;
-	private Combo categoryFiler;
+	private Combo categoryFilter;
 	private Combo designersFilter;
 	private Combo lenghtsFilter;
 	
@@ -119,12 +119,12 @@ public class ToyLibrary extends MainForm {
 				OUT.setSelection(false);
 				
 				FormUtil.createLabel(functions, 1, Messages.getString("ToyLibrary.14"));
-				categoryFiler = FormUtil.createCombo(functions, 1, categories);
-				categoryFiler.addSelectionListener(new SelectionListener() {
+				categoryFilter = FormUtil.createCombo(functions, 1, categories);
+				categoryFilter.addSelectionListener(new SelectionListener() {
 					
 					@Override
 					public void widgetSelected(SelectionEvent arg0) {
-						String category = categoryFiler.getText();
+						String category = categoryFilter.getText();
 						tableGames.removeAll();
 						TableItem ti;
 						List<String> newFilter = new ArrayList<String>();
@@ -171,7 +171,7 @@ public class ToyLibrary extends MainForm {
 								newFilter.addAll(bg.getCategories());
 							}
 						}
-						categoryFiler.setItems(getArrayFromList(newFilter));
+						categoryFilter.setItems(getArrayFromList(newFilter));
 					}
 					
 					@Override
@@ -376,9 +376,9 @@ public class ToyLibrary extends MainForm {
 		for(BoardGame bg : games)
 			request.addGameId(bg.getGameId());
 		FindCategory fg = new FindCategory(request);
-		categoryFiler.removeAll();
+		categoryFilter.removeAll();
 		categories = fg.getCategories();
-		categoryFiler.setItems(categories);
+		categoryFilter.setItems(categories);
 		designersFilter.removeAll();
 		designers = fg.getDesigners();
 		designersFilter.setItems(designers);
