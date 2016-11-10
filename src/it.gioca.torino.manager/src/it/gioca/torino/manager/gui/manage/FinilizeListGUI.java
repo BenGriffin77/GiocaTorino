@@ -275,14 +275,9 @@ public class FinilizeListGUI extends MainForm {
 		if(games.size()>0){
 			for(BoardGame game: games){
 				TableItem ti = new TableItem(tableGames, SWT.NONE);
-<<<<<<< HEAD
 				ti.setText(new String[]{game.getName(),game.getGameId()+""});
 //				//FIXME: da import
 //				game.setLanguage("ITALIANO");
-=======
-				ti.setText(new String[]{game.getName(),game.getGameId()+"",game.getLanguage()});
-				//game.setLanguage("ITALIANO");
->>>>>>> master
 				if(newElements)
 					boardsGame.add(new BoardGame(game));
 				else

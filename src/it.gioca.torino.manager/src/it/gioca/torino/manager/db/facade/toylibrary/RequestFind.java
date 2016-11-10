@@ -9,11 +9,7 @@ public class RequestFind implements IRequestDTO {
 
 	private List<Integer> gamesIds = new ArrayList<Integer>();
 	
-<<<<<<< HEAD
 	private List<SearchType> type = new ArrayList<SearchType>();
-=======
-	private SearchType type;
->>>>>>> master
 
 	public List<Integer> getGamesIds() {
 		return gamesIds;
@@ -27,7 +23,6 @@ public class RequestFind implements IRequestDTO {
 		this.gamesIds.add(id);
 	}
 
-<<<<<<< HEAD
 	public List<SearchType> getType() {
 		return type;
 	}
@@ -37,13 +32,6 @@ public class RequestFind implements IRequestDTO {
 	}
 
 	public void setType(List<SearchType> type) {
-=======
-	public SearchType getType() {
-		return type;
-	}
-
-	public void setType(SearchType type) {
->>>>>>> master
 		this.type = type;
 	}
 	

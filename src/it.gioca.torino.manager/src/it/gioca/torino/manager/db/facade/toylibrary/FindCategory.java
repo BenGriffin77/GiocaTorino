@@ -6,32 +6,23 @@ import it.gioca.torino.manager.db.SingletonQuery;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-<<<<<<< HEAD
 import java.util.Collections;
-=======
->>>>>>> master
 import java.util.HashMap;
 import java.util.List;
 
 public class FindCategory extends ConnectionManager {
 
-<<<<<<< HEAD
 	private List<String> categories;
 	private List<String> designers;
 	private HashMap<Integer, List<String>> catById;
 	private HashMap<Integer, List<String>> desById;
 	private HashMap<Integer, GameTime> gameTimeById;
 	private HashMap<Integer, GamePlayers> gamePlayerById;
-=======
-	private List<String> elements;
-	private HashMap<Integer, List<String>> correctElements;
->>>>>>> master
 	
 	public FindCategory(IRequestDTO request) {
 		super(request);
 	}
 	
-<<<<<<< HEAD
 	public String[] getCategories(){
 		String []dsf = new String[categories.size()];
 		return categories.toArray(dsf);
@@ -67,22 +58,11 @@ public class FindCategory extends ConnectionManager {
 				max = gp.getMaxPlayers();
 		}
 		return new int[]{min, max};
-=======
-	public String[] getElements(){
-		String []dsf = new String[elements.size()];
-		return elements.toArray(dsf);
-	}
-	
-	public List<String> getElementById(int idgame){
-		
-		return correctElements.get(idgame);
->>>>>>> master
 	}
 	
 	@Override
 	protected void execute(IRequestDTO request) {
 		
-<<<<<<< HEAD
 		categories = new ArrayList<String>();
 		designers = new ArrayList<String>();
 		catById = new HashMap<Integer, List<String>>();
@@ -156,45 +136,12 @@ public class FindCategory extends ConnectionManager {
 		case PLAYERS: val = 3; columnName = "MAXPL"; columnNameBis="MINPL"; break;
 		}
 		String query = SingletonQuery.getInstance().getQuery("SEARCH", val);
-=======
-		elements = new ArrayList<String>();
-		correctElements = new HashMap<Integer, List<String>>();
-		RequestFind req = (RequestFind)request;
-		for(Integer idgame: req.getGamesIds()){
-			switch(req.getType()){
-			case CATEGORY: addElements(getRsetByCategory(idgame)); break;
-			}
-		}
-	}
-	
-	private void addElements(List<String> downloaded){
-		
-		for(String down: downloaded){
-			boolean isPresent = false;
-			if(elements.size()>0)
-				for(String cat: elements){
-					if(down.equalsIgnoreCase(cat)){
-						isPresent = true;
-						continue;
-					}
-				}
-			if(!isPresent)
-				elements.add(down);
-		}
-	}
-
-	private List<String> getRsetByCategory(int gameId){
-		
-		List<String> ret = new ArrayList<String>();
-		String query = SingletonQuery.getInstance().getQuery("SEARCH", 0);
->>>>>>> master
 		try{
 			pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, gameId);
 			rset = pstmt.executeQuery();
 			if(rset!=null)
 				while(rset.next()){
-<<<<<<< HEAD
 					switch(type){
 					case TIME: {
 						GameTime gt = new GameTime();
@@ -211,14 +158,10 @@ public class FindCategory extends ConnectionManager {
 					}
 					default: ret.add(rset.getString(columnName)); break; 
 					}
-=======
-					ret.add(rset.getString("CATEGORY_NAME"));
->>>>>>> master
 				}
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
-<<<<<<< HEAD
 		switch(type){
 		case CATEGORY:{
 			if(!catById.containsKey(gameId))
@@ -232,10 +175,6 @@ public class FindCategory extends ConnectionManager {
 		}
 		default: break;
 		}
-=======
-		if(!correctElements.containsKey(gameId))
-			correctElements.put(gameId, ret);
->>>>>>> master
 		return ret;
 	}
 }

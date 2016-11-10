@@ -67,11 +67,7 @@ public class AllGameListFacede extends ConnectionManager {
 			    		bg.setOwnerID(ownerId);
 			    		bg.setId_document(id_document);
 			    		bg.setStatusGame(statusGame);
-<<<<<<< HEAD
 			    		bg.setLanguage(language);
-=======
-			    		//bg.setLanguage(language);
->>>>>>> master
 			    		games.add(bg);
 			    		image.free();
 			    	}
@@ -80,11 +76,7 @@ public class AllGameListFacede extends ConnectionManager {
 			    		bg.setDimostrator(user);
 			    		bg.setExitId(exitId);
 			    		bg.setOwnerID(ownerId);
-<<<<<<< HEAD
 			    		bg.setLanguage(language);
-=======
-			    		//bg.setLanguage(language);
->>>>>>> master
 			    		games.add(bg);
 			    	}
 				}

@@ -245,13 +245,8 @@ public class ReCallListGui extends MainForm {
 		if(games.size()>0){
 			for(BoardGame game: games){
 				TableItem ti = new TableItem(tableGames, SWT.NONE);
-<<<<<<< HEAD
 				ti.setText(new String[]{game.getName(),game.getGameId()+""});
 //				game.setLanguage(game.getLanguage()==null || game.getLanguage().equalsIgnoreCase("")? "ITALIANO":game.getLanguage());
-=======
-				ti.setText(new String[]{game.getName(),game.getGameId()+"",game.getLanguage()});
-				//game.setLanguage("ITALIANO");
->>>>>>> master
 				if(newElements)
 					boardsGame.add(new BoardGame(game));
 				else

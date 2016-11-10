@@ -54,7 +54,6 @@ public class ToyLibrary extends MainForm {
 	private List<BoardGame> games;
 	private CheckOutObjectModel coModel;
 	private Text filter;
-<<<<<<< HEAD
 	private Combo categoryFiler;
 	private Combo designersFilter;
 	private Combo lenghtsFilter;
@@ -64,10 +63,6 @@ public class ToyLibrary extends MainForm {
 	private String[] categories = {""};
 	private String[] players = {""};
 	private Combo playersFilter;
-=======
-	private Group functions;
-	private Combo categoryFiler;
->>>>>>> master
 
 	public ToyLibrary(String stateName, String title) {
 		super(stateName, title);
@@ -101,7 +96,6 @@ public class ToyLibrary extends MainForm {
 									new ColumnType(Messages.getString("ToyLibrary.6"), CTYPE.IMAGE),
 									new ColumnType(Messages.getString("ToyLibrary.7"), CTYPE.TEXT),
 									new ColumnType(Messages.getString("ToyLibrary.11"), CTYPE.TEXT),
-<<<<<<< HEAD
 									new ColumnType(Messages.getString("ToyLibrary.13"), CTYPE.INT),
 									new ColumnType(Messages.getString("ToyLibrary.18"), CTYPE.TEXT)};
 			tableGames = FormUtil.createTable(group, columns);
@@ -118,21 +112,11 @@ public class ToyLibrary extends MainForm {
 							fillTheTable();
 					}
 				});
-=======
-									new ColumnType(Messages.getString("ToyLibrary.13"), CTYPE.INT)};
-			tableGames = FormUtil.createTable(group, columns);
-			
-			{
-				functions = FormUtil.createAGroup(group, 1, 1, "", true);
-				FormUtil.createLabel(functions, 1, "Filtro:");
-				filter = FormUtil.createText(functions, "");
->>>>>>> master
 				drawButton(Messages.getString("ToyLibrary.8"), functions, EBUTTON.UPDATE);
 				OUT = drawButton(Messages.getString("ToyLibrary.9"), functions, EBUTTON.OUT, true);
 				OUT.setSelection(true);
 				IN = drawButton(Messages.getString("ToyLibrary.10"), functions, EBUTTON.IN, true);
 				OUT.setSelection(false);
-<<<<<<< HEAD
 				
 				FormUtil.createLabel(functions, 1, Messages.getString("ToyLibrary.14"));
 				categoryFiler = FormUtil.createCombo(functions, 1, categories);
@@ -257,8 +241,6 @@ public class ToyLibrary extends MainForm {
 						
 					}
 				});
-=======
->>>>>>> master
 			}
 			tableGames.addMouseListener(new MouseListener() {
 				
@@ -355,16 +337,11 @@ public class ToyLibrary extends MainForm {
 			for(BoardGame bg: games){
 				if(filter.getText()!=""){
 					String text = filter.getText();
-<<<<<<< HEAD
 					if(!bg.getName().toLowerCase().contains(text.toLowerCase()) && !findIntoAlternativeNames(bg, text.toLowerCase()))
-=======
-					if(!bg.getName().toLowerCase().contains(text.toLowerCase()))
->>>>>>> master
 						continue;
 				}
 				ti = new TableItem(tableGames, SWT.NONE);
 				ti.setText(0, bg.getName());
-<<<<<<< HEAD
 				if(bg.getThumbnail()!=null)
 					ti.setImage(1, FormUtil.setImageInTheTable(bg.getThumbnail()));
 				int status = bg.getStatusGame();
@@ -374,16 +351,6 @@ public class ToyLibrary extends MainForm {
 				ti.setText(5, bg.getLanguage());
 				if(status!=0)
 					ti.setBackground(ThemeManager.getCustomColor());
-=======
-				//ti.setText(1, bg.getLanguage());
-				
-				if(bg.getThumbnail() != null)
-					ti.setImage(2, FormUtil.setImageInTheTable(bg.getThumbnail()));
-				
-				ti.setText(3, bg.getStatusGame()==0? "IN LUDOTECA":bg.getDimostrator());
-				ti.setText(4, bg.getOwnerName());
-				ti.setText(5, bg.getId_document()+"");
->>>>>>> master
 			}
 		}
 		for(TableColumn tc: tableGames.getColumns())
@@ -391,7 +358,6 @@ public class ToyLibrary extends MainForm {
 		loadFilter();
 	}
 	
-<<<<<<< HEAD
 	private boolean findIntoAlternativeNames(BoardGame bg, String key){
 		
 		for(String name: bg.getAlternativeNames())
@@ -444,52 +410,6 @@ public class ToyLibrary extends MainForm {
 		int maxBg = bg.getMaxTime();
 		return (minBg >= min && maxBg <= max);
 	}
-=======
-	private void loadFilter() {
-		
-		RequestFind request = new RequestFind();
-		request.setType(SearchType.CATEGORY);
-		for(BoardGame bg : games)
-			request.addGameId(bg.getGameId());
-		FindCategory fg = new FindCategory(request);
-		if(categoryFiler==null){
-			FormUtil.createLabel(functions, 1, Messages.getString("ToyLibrary.14"));
-			categoryFiler = FormUtil.createCombo(functions, 1, fg.getElements());
-		}
-		else{
-			categoryFiler.removeAll();
-			categoryFiler.setItems(fg.getElements());
-		}
-		for(BoardGame bg : games)
-			bg.setCategories(fg.getElementById(bg.getGameId()));
-		categoryFiler.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent arg0) {
-				String category = categoryFiler.getText();
-				tableGames.removeAll();
-				TableItem ti;
-				for(BoardGame bg: games){
-					if(bg.containsCategory(category)){
-						ti = new TableItem(tableGames, SWT.NONE);
-						ti.setText(0, bg.getName());
-						if(bg.getThumbnail()!=null)
-							ti.setImage(1, FormUtil.setImageInTheTable(bg.getThumbnail()));
-						ti.setText(2, bg.getStatusGame()==0? "IN LUDOTECA":bg.getDimostrator());
-						ti.setText(3, bg.getOwnerName());
-						ti.setText(4, bg.getId_document()+"");
-					}
-				}
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				
-			}
-		});
-	}
-
->>>>>>> master
 
 	private Button drawButton(String text, Composite c, final EBUTTON eB){
 		
