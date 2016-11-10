@@ -7,6 +7,7 @@ import it.gioca.torino.manager.db.facade.game.request.BoardGameRequest;
 import it.gioca.torino.manager.db.facade.users.FindIDUserFacade;
 import it.gioca.torino.manager.db.facade.users.request.RequestUser;
 import it.gioca.torino.manager.gui.util.BoardGame;
+import it.gioca.torino.manager.gui.util.LoggerPoints;
 import it.gioca.torino.manager.gui.util.TinyGame;
 
 import java.sql.SQLException;
@@ -31,7 +32,7 @@ public class AddBoardGamesToLibraryFacade extends ConnectionManager {
 		try{
 			for(BoardGame bg: req.getBoardgames()){
 				insert(bg, ret);
-				//delete(bg, ret);
+				delete(bg, ret);
 			}
 		}catch (SQLException e) {
 			e.printStackTrace();
@@ -49,6 +50,7 @@ public class AddBoardGamesToLibraryFacade extends ConnectionManager {
 		pstmt.setInt(5, 0);
 		pstmt.execute();
 		exit=true;
+		LoggerPoints.getInstace().saveLoad("L'utente con userid: "+userId +" ha portato: "+ bg.getName());
 		addExpansions(bg, userId);
 	}
 	
@@ -68,4 +70,22 @@ public class AddBoardGamesToLibraryFacade extends ConnectionManager {
 		}
 	}
 
+	private void delete(BoardGame bg, int userId) throws SQLException{
+		
+		String query = SingletonQuery.getInstance().getQuery("PREPARED_GAMES",5);
+		pstmt = conn.prepareStatement(query);
+//		pstmt.setInt(1, bg.getGameId());
+		pstmt.setInt(1, userId);
+		pstmt.execute();
+//		cleanOld(bg, userId);
+	}
+	
+//	private void cleanOld(BoardGame bg, int userId) throws SQLException{
+//	
+//	String query = SingletonQuery.getInstance().getQuery("PREPARED_GAMES",2);
+//	pstmt = conn.prepareStatement(query);
+//	pstmt.setInt(1, bg.getGameId());
+//	pstmt.setInt(2, userId);
+//	pstmt.execute();
+//}
 }

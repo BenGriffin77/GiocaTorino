@@ -10,6 +10,7 @@ public class LoggerPoints {
 	private static LoggerPoints instance;
 	
 	private FileWriter flLog;
+	private FileWriter loadListLog;
 	
 	public static LoggerPoints getInstace(){
 		if(instance==null)
@@ -21,6 +22,19 @@ public class LoggerPoints {
 		
 		try {
 			flLog = new FileWriter("info.log", true);
+			loadListLog = new FileWriter("load.log", true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void saveLoad(String log){
+		SimpleDateFormat spdata = new SimpleDateFormat("dd-MM-YYYY;HH:mm -- ");
+		String now = spdata.format(new Date());
+		try {
+			loadListLog.append(now+log);
+			loadListLog.append(System.getProperty("line.separator"));
+			loadListLog.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
