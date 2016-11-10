@@ -22,6 +22,7 @@ public class Config {
 	public static boolean ALTERNATIVE_HISTORY;
 	public static boolean ALTERNATIVE_FIND_USER;
 	public static int MAXDIALOGMULTI;
+	public static boolean DEBUG;
 	/*
 	 * Search configs
 	 */
@@ -68,5 +69,7 @@ public class Config {
 		}
 		SELECT = Integer.parseInt(prop.getProperty("select"));
 		MAXDIALOGMULTI = Integer.parseInt(prop.getProperty("maxDialogMulti"));
+		
+		DEBUG = Boolean.parseBoolean("debug");
 	}
 }

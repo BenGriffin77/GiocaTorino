@@ -1,5 +1,7 @@
 package it.gioca.torino.manager.db;
 
+import it.gioca.torino.manager.Config;
+
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -16,7 +18,7 @@ public class SingletonQuery {
 
 	private static SingletonQuery instance;
 	
-	private boolean debug = true;
+	private boolean debug = Config.DEBUG;
 	
 	private HashMap<String, Query> queries = new HashMap<String, Query>();
 	
