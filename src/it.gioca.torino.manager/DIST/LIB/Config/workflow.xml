@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<list>
+	<state id="start" class="it.gioca.torino.manager.gui.FirstForm" title="First">
+		<transition id="manage" to="manage"/>
+		<transition id="addGames" to="addGames"/>
+		<transition id="find" to="users"/>
+		<transition id="stats" to="stats"/>
+		<transition id="esci" to="exit"/>
+	</state>
+	<state id="addGames" class="it.gioca.torino.manager.gui.manage.ManageGui" title="Manage our theca games">
+		<transition id="indietro" to="start"/>
+		<transition id="newList" to="AddList"/>
+		<transition id="loadList" to="LoadList"/>
+		<transition id="finalize" to="Finalize"/>
+		<transition id="unload" to="Unload"/>
+	</state>
+	<state id="Unload" class="it.gioca.torino.manager.gui.manage.UnloadGames" title="Clean users and games">
+	    <transition id="indietro" to="start"/>
+		<transition id="newList" to="AddList"/>
+		<transition id="loadList" to="LoadList"/>
+		<transition id="finalize" to="Finalize"/>
+	</state>
+	<state id="AddList" class="it.gioca.torino.manager.gui.manage.AddListGui" title="Add a List of Game">
+		<transition id="indietro" to="start"/>
+		<transition id="loadList" to="LoadList"/>
+		<transition id="finalize" to="Finalize"/>
+		<transition id="unload" to="Unload"/>
+	</state>
+	<state id="LoadList" class="it.gioca.torino.manager.gui.manage.ReCallListGui" title="Load a Saved list">
+		<transition id="indietro" to="start"/>
+		<transition id="newList" to="AddList"/>
+		<transition id="finalize" to="Finalize"/>
+		<transition id="unload" to="Unload"/>
+	</state>
+	<state id="Finalize" class="it.gioca.torino.manager.gui.manage.FinalizeListGUI" title="Finalize the list">
+		<transition id="indietro" to="start"/>
+		<transition id="newList" to="AddList"/>
+		<transition id="loadList" to="LoadList"/>
+		<transition id="unload" to="Unload"/>
+	</state>
+	<state id="manage" class="it.gioca.torino.manager.gui.toylibrity.ToyLibrary" title="CheckIn CheckOut">
+	    <objectModel class="it.gioca.torino.manager.gui.toylibrity.CheckOutObjectModel"/>
+		<transition id="exit_game" to="checkOut"/>
+		<transition id="indietro" to="start"/>
+		<transition id="enter_game" to="checkIn"/>
+		<transition id="next" to="finishTheCheckOut"/>
+	</state>
+	<state id="checkOut" class="it.gioca.torino.manager.gui.toylibrity.CheckOut" title="CheckOut">
+		<objectModel class="it.gioca.torino.manager.gui.toylibrity.CheckOutObjectModel"/>
+		<transition id="next" to="finishTheCheckOut"/>
+		<transition id="indietro" to="manage"/>
+	</state>
+	<state id="finishTheCheckOut" class="it.gioca.torino.manager.gui.toylibrity.FinishTheCheckOut" title="Finishing">
+		<objectModel class="it.gioca.torino.manager.gui.toylibrity.FinishTheCheckOutObjectModel"/>
+		<transition id="end" to="manage"/>
+		<transition id="indietro" to="checkOut"/>
+	</state>
+	<state id="checkIn" class="it.gioca.torino.manager.gui.toylibrity.FreeTheGame" title="CheckIn">
+		<transition id="indietro" to="manage"/>	
+	</state>
+	<state id="stats" class="it.gioca.torino.manager.gui.stats.StatsGui" title="Statistiche">
+		<transition id="indietro" to="start"/>
+	</state>
+	<state id="users" class="it.gioca.torino.manager.gui.manage.users.ManageUsers" title="Gestisci Utenti">
+		<transition id="indietro" to="start"/>
+	</state>
+</list>
