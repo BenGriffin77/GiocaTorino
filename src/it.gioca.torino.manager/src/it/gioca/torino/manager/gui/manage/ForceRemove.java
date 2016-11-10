@@ -44,11 +44,11 @@ public class ForceRemove extends MainDialog {
 	private Combo newOwner;
 
 	private Button SAVENEWOWNER;
-
+	
 	public ForceRemove(Shell parent) {
 		super(parent);
 	}
-
+	
 	@Override
 	protected void createTextWidgets() {
 	
@@ -146,6 +146,7 @@ public class ForceRemove extends MainDialog {
 			gamesIds.add(Integer.parseInt(ti.getText(0)));
 		RequestNewOwner request = new RequestNewOwner();
 		request.setNewOwner(newOwner.getText());
+		request.setOldOwner(userName);
 		request.setGames(gamesIds);
 		NewOwnerFacade nof = new NewOwnerFacade(request);
 		if(nof.isCorrectExit()){

@@ -89,6 +89,8 @@ public class AddListGui extends MainForm {
 	}
 
 	private String[] getUsers(){
+<<<<<<< HEAD
+=======
 		
 		RequestGetUsers request = new RequestGetUsers();
 		request.setAll(true);
@@ -98,7 +100,17 @@ public class AddListGui extends MainForm {
 	}
 	
 	private void drawCentrale() {
+>>>>>>> master
 		
+		RequestGetUsers request = new RequestGetUsers();
+		request.setAll(true);
+		UserListFacade ulf = new UserListFacade(request);
+		String[] users = ulf.getUsers();
+		return users;
+	}
+	
+	private void drawCentrale() {
+		boardsGame = new ArrayList<BoardGame>();
 		Composite centrale =  getMainComposite();
 		GridData gdData = new GridData(GridData.FILL_BOTH);
 		GridLayout gdLayout = new GridLayout();
@@ -141,7 +153,12 @@ public class AddListGui extends MainForm {
 					}
 				});
 				FormUtil.createLabel(group, 1, "");
+<<<<<<< HEAD
+				Button b = drawButton(Messages.getString("AddListGui.16"),group, EBUTTON.ADDLIST);
+				b.setEnabled(false);
+=======
 				drawButton(Messages.getString("AddListGui.16"),group, EBUTTON.ADDLIST);
+>>>>>>> master
 			}
 			ColumnType[] columns = {new ColumnType(Messages.getString("AddListGui.6"), CTYPE.TEXT),
 					new ColumnType(Messages.getString("AddListGui.7"), CTYPE.TEXT)};
@@ -151,6 +168,7 @@ public class AddListGui extends MainForm {
 				@Override
 				public void widgetSelected(SelectionEvent arg0) {
 					remove.setEnabled(true);
+					languages.setEnabled(true);
 					checkParamitersSaveButton();
 					updateTables();
 				}
@@ -193,11 +211,13 @@ public class AddListGui extends MainForm {
 				functionSave.setEnabled(false);
 				languages = FormUtil.createCombo(moreFunctions, 1);
 				languages.setData("LANGUAGES");
+				languages.setEnabled(false);
 				languages.addSelectionListener(new SelectionListener() {
 					
 					@Override
 					public void widgetSelected(SelectionEvent arg0) {
 						functionSave.setEnabled(true);
+						setLag(languages.getText());
 						checkParamitersSaveButton();
 					}
 					
@@ -212,6 +232,19 @@ public class AddListGui extends MainForm {
 		}
 	}
 	
+	protected void setLag(String text) {
+		
+		int value = tableGames.getSelectionIndex();
+		if(value==-1)
+			return;
+		int gameId = Integer.parseInt(tableGames.getItem(value).getText(1));
+		for(BoardGame bg: boardsGame){
+			if(gameId == bg.getGameId()){
+				bg.setLanguage(text);
+			}
+		}
+	}
+
 	private void updateTables(){
 		
 		int value = tableGames.getSelectionIndex();
@@ -431,7 +464,7 @@ public class AddListGui extends MainForm {
 		public String toString() {
 			
 			switch(this){
-			case UNLOAD: return "";
+			case UNLOAD: return "unload";
 			case MANAGE: return "finalize";
 			case LOAD_LIST: return "loadList";
 			case SAVE:

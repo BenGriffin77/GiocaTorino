@@ -6,18 +6,9 @@ import it.gioca.torino.manager.common.MainForm;
 import it.gioca.torino.manager.common.ThemeManager;
 import it.gioca.torino.manager.common.ThemeManager.COLOR;
 import it.gioca.torino.manager.db.facade.game.AddABoardGameListFacade;
-import it.gioca.torino.manager.db.facade.game.FindBoardGameListFacade;
-import it.gioca.torino.manager.db.facade.game.FindGameExpansionsFacade;
-import it.gioca.torino.manager.db.facade.game.remove.ListOfGameByUser;
 import it.gioca.torino.manager.db.facade.game.request.BoardGameRequest;
-import it.gioca.torino.manager.db.facade.game.request.RequestFindGame;
-import it.gioca.torino.manager.db.facade.users.UserListFacade;
-import it.gioca.torino.manager.db.facade.users.request.RequestGetUsers;
-import it.gioca.torino.manager.db.facade.users.request.RequestUser;
 import it.gioca.torino.manager.gui.find.game.FindGameDialog;
 import it.gioca.torino.manager.gui.util.BoardGame;
-import it.gioca.torino.manager.gui.util.ColumnType;
-import it.gioca.torino.manager.gui.util.ColumnType.CTYPE;
 import it.gioca.torino.manager.gui.util.FormUtil;
 import it.gioca.torino.manager.gui.util.GAMESTATUS;
 import it.gioca.torino.manager.gui.util.TinyGame;
@@ -27,18 +18,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -49,10 +34,10 @@ public class ManageGui extends MainForm {
 
 	private Table tableGames;
 	
-	private Color YELLOW = ThemeManager.getColor(COLOR.YELLOW);
-	private Color CYAN = ThemeManager.getColor(COLOR.CYAN);
-
-	private Button remove;
+//	private Color YELLOW = ThemeManager.getColor(COLOR.YELLOW);
+//	private Color CYAN = ThemeManager.getColor(COLOR.CYAN);
+//
+//	private Button remove;
 
 	private Button uploadGames;
 
@@ -76,7 +61,7 @@ public class ManageGui extends MainForm {
 	
 	private boolean caricaForm = false;
 	
-	private boolean preparaForm = false;
+//	private boolean preparaForm = false;
 
 	private Button forceRemove;
 
@@ -100,6 +85,167 @@ public class ManageGui extends MainForm {
 //		drawAddList(modifica, false);
 //	}
 	
+<<<<<<< HEAD
+//	private void drawAddList(final boolean modifica, final boolean tryToExit){
+//		editedForm = false;
+//		boardsGame = new ArrayList<BoardGame>();
+//		
+//		Composite centrale =  getMainComposite();
+//		GridData gdData = new GridData(GridData.FILL_BOTH);
+//		GridLayout gdLayout = new GridLayout();
+//		centrale.setLayout(gdLayout);
+//		centrale.setLayoutData(gdData);
+//		centrale.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+//		Group group = FormUtil.createGenGroup(centrale, 1, 2, "", true);
+//		{
+//			FormUtil.createLabel(group, 1, Messages.getString("ManageGui.7"));
+//			if(!modifica){
+//				demonstrator = FormUtil.createText(group, 1, "");
+//				demonstrator.setData(demonstrator.getText());
+//				demonstrator.addFocusListener(new FocusListener() {
+//					
+//					@Override
+//					public void focusLost(FocusEvent arg0) {
+//						demonstrator.setBackground(YELLOW);
+//						checkParamitersSaveButton();
+//					}
+//					
+//					@Override
+//					public void focusGained(FocusEvent arg0) {
+//						demonstrator.setBackground(CYAN);
+//					}
+//				});
+//			}
+//			else{
+//				RequestGetUsers request = new RequestGetUsers();
+//				if(tryToExit)
+//					request.setExit(true);
+//				else
+//					request.setAll(false);
+//				UserListFacade ulf = new UserListFacade(request);
+//				String[] users = ulf.getUsers();
+//				user = FormUtil.createCombo(group, 1, users);
+//				user.setData("USER");
+//				user.addSelectionListener(new SelectionListener() {
+//					
+//					@Override
+//					public void widgetSelected(SelectionEvent arg0) {
+//						String userName = user.getText();
+//						RequestUser request = new RequestUser();
+//						request.setUserName(userName);
+//						tableGames.removeAll();
+//						if(tableExpansions!=null && !tableExpansions.isDisposed())
+//							tableExpansions.removeAll();
+//						boardsGame = new ArrayList<BoardGame>();
+//						if(!tryToExit){
+//							FindBoardGameListFacade fbgl = new FindBoardGameListFacade(request);
+//							addItemsToTheTable(fbgl.getGames(), false);
+//						}
+//						else{
+//							ListOfGameByUser fogbu = new ListOfGameByUser(request);
+//							addItemsToTheTable(fogbu.getGames(), false);
+//						}
+//						checkParamitersSaveButton();
+//						if(functionSave!=null && !functionSave.isDisposed())
+//							functionSave.setEnabled(false);
+//						if(uploadGames!=null && !uploadGames.isDisposed())
+//							uploadGames.setEnabled(boardsGame.size()>0);
+//					}
+//					
+//					@Override
+//					public void widgetDefaultSelected(SelectionEvent arg0) {
+//						
+//					}
+//				});
+//			}
+//			ColumnType[] columns = {new ColumnType(Messages.getString("ManageGui.8"), CTYPE.TEXT),
+//									new ColumnType(Messages.getString("ManageGui.9"), CTYPE.TEXT)};
+//			tableGames = FormUtil.createTable(group, columns);
+//			tableGames.addSelectionListener(new SelectionListener() {
+//				
+//				@Override
+//				public void widgetSelected(SelectionEvent arg0) {
+//					if(remove!=null && !remove.isDisposed())
+//						remove.setEnabled(true);
+//					checkParamitersSaveButton();
+//					updateTables();
+//				}
+//				
+//				@Override
+//				public void widgetDefaultSelected(SelectionEvent arg0) {
+//					
+//				}
+//			});
+//			{
+//				Group functions = FormUtil.createAGroup(group, 1, 1, Messages.getString("ManageGui.4"), true);
+//				if(!tryToExit){
+//				drawButton(Messages.getString("ManageGui.5"),functions, EBUTTON.ADD_GAME);
+//				remove = drawButton(Messages.getString("ManageGui.6"),functions, EBUTTON.REMOVE_GAME);
+//				remove.setEnabled(false);
+//				}
+//				else{
+////					remove = drawButton(Messages.getString("ManageGui.6"),functions, EBUTTON.REMOVE_GAME);
+////					remove.setEnabled(false);
+//					forceRemove = drawButton(Messages.getString("ManageGui.19"), functions, EBUTTON.FORCE_REMOVE_GAME);
+//					forceRemove.setEnabled(false);
+//				}
+//				if(modifica && !tryToExit){
+//					uploadGames = drawButton(Messages.getString("ManageGui.13"), functions, EBUTTON.MODIFY);
+//					uploadGames.setEnabled(false);
+//				}
+//				if(editedForm || preparaForm){
+//					save = drawButton(Messages.getString("ManageGui.12"), functions, EBUTTON.SAVE);
+//					save.setEnabled(false);
+//				}
+//
+//			}
+//			if(!tryToExit)
+//				{
+//					Group expansions = FormUtil.createAGroup(group, 2, 2, Messages.getString("ManageGui.14"), true);
+//					ColumnType[] columnsExpansions = {new ColumnType(Messages.getString("ManageGui.17"), CTYPE.INT),
+//							new ColumnType(Messages.getString("ManageGui.18"), CTYPE.TEXT)};
+//					{
+//						tableExpansions = FormUtil.createTable(expansions, columnsExpansions);
+//						tableExpansions.addSelectionListener(new SelectionListener() {
+//							
+//							@Override
+//							public void widgetSelected(SelectionEvent arg0) {
+//								functionSave.setEnabled(true);
+//							}
+//							
+//							@Override
+//							public void widgetDefaultSelected(SelectionEvent arg0) {
+//								
+//							}
+//						});
+//						
+//						Group moreFunctions = FormUtil.createAGroup(expansions, 1, 1, Messages.getString("ManageGui.15"), true);
+//						if(!preparaForm){
+//							save = drawButton(Messages.getString("ManageGui.12"), moreFunctions, EBUTTON.SAVE);
+//							save.setEnabled(false);
+//						}
+//						languages = FormUtil.createCombo(moreFunctions, 1);
+//						languages.setData("LANGUAGES");
+//						languages.addSelectionListener(new SelectionListener() {
+//							
+//							@Override
+//							public void widgetSelected(SelectionEvent arg0) {
+//								functionSave.setEnabled(true);
+//							}
+//							
+//							@Override
+//							public void widgetDefaultSelected(SelectionEvent arg0) {
+//								
+//							}
+//						});
+//						FormUtil.createLabel(moreFunctions, 1, "");
+//						FormUtil.createLabel(moreFunctions, 1, "");
+//					}
+//				}
+//		}
+//		centrale.layout();
+//	}
+=======
 	private void drawAddList(final boolean modifica, final boolean tryToExit){
 		editedForm = false;
 		boardsGame = new ArrayList<BoardGame>();
@@ -260,6 +406,7 @@ public class ManageGui extends MainForm {
 		}
 		centrale.layout();
 	}
+>>>>>>> master
 	
 	private void checkParamitersSaveButton(){
 		
@@ -275,58 +422,58 @@ public class ManageGui extends MainForm {
 			functionSave.setEnabled(true);
 	}
 	
-	private void updateTables(){
-		
-		int value = tableGames.getSelectionIndex();
-		if(value==-1)
-			return;
-		if(tableExpansions!=null && !tableExpansions.isDisposed())
-			tableExpansions.removeAll();
-		
-		if(tableExpansions!=null && !tableExpansions.isDisposed()){
-			RequestFindGame request = new RequestFindGame();
-			int gameId = Integer.parseInt(tableGames.getItem(value).getText(1));
-			request.setGameId(gameId);
-			
-			FindGameExpansionsFacade fgef = new FindGameExpansionsFacade(request);
-			List<TinyGame> expansions = fgef.getExpansions();
-			if(expansions.size()>0){
-				for(TinyGame tg: expansions){
-					TableItem ti = new TableItem(tableExpansions, SWT.NONE);
-					ti.setText(0, tg.getGameId()+"");
-					ti.setText(1,tg.getName());
-				}
-			}
-			for(TableColumn tc: tableExpansions.getColumns())
-				tc.pack();
-			
-			for(BoardGame bg: boardsGame){
-				if(gameId == bg.getGameId()){
-					if(bg.getExpansions()!= null && bg.getExpansions().size()>0)
-						selectElement(bg.getExpansions());
-					if(bg.getLanguage()!=null){
-						String lang = bg.getLanguage();
-						languages.select(FormUtil.getLangId(lang));
-					}
-					return;
-				}
-			}
-		}
-	}
+//	private void updateTables(){
+//		
+//		int value = tableGames.getSelectionIndex();
+//		if(value==-1)
+//			return;
+//		if(tableExpansions!=null && !tableExpansions.isDisposed())
+//			tableExpansions.removeAll();
+//		
+//		if(tableExpansions!=null && !tableExpansions.isDisposed()){
+//			RequestFindGame request = new RequestFindGame();
+//			int gameId = Integer.parseInt(tableGames.getItem(value).getText(1));
+//			request.setGameId(gameId);
+//			
+//			FindGameExpansionsFacade fgef = new FindGameExpansionsFacade(request);
+//			List<TinyGame> expansions = fgef.getExpansions();
+//			if(expansions.size()>0){
+//				for(TinyGame tg: expansions){
+//					TableItem ti = new TableItem(tableExpansions, SWT.NONE);
+//					ti.setText(0, tg.getGameId()+"");
+//					ti.setText(1,tg.getName());
+//				}
+//			}
+//			for(TableColumn tc: tableExpansions.getColumns())
+//				tc.pack();
+//			
+//			for(BoardGame bg: boardsGame){
+//				if(gameId == bg.getGameId()){
+//					if(bg.getExpansions()!= null && bg.getExpansions().size()>0)
+//						selectElement(bg.getExpansions());
+//					if(bg.getLanguage()!=null){
+//						String lang = bg.getLanguage();
+//						languages.select(FormUtil.getLangId(lang));
+//					}
+//					return;
+//				}
+//			}
+//		}
+//	}
 	
-	private void selectElement(List<TinyGame> expansions){
-	
-		for(int i=0; i<tableExpansions.getItems().length; i++){
-			TableItem ti = tableExpansions.getItem(i);
-			int gameId = Integer.parseInt(ti.getText(0));
-			for(TinyGame tg: expansions){
-				if(gameId == tg.getGameId()){
-					tableExpansions.select(i);
-					break;
-				}
-			}
-		}
-	}
+//	private void selectElement(List<TinyGame> expansions){
+//	
+//		for(int i=0; i<tableExpansions.getItems().length; i++){
+//			TableItem ti = tableExpansions.getItem(i);
+//			int gameId = Integer.parseInt(ti.getText(0));
+//			for(TinyGame tg: expansions){
+//				if(gameId == tg.getGameId()){
+//					tableExpansions.select(i);
+//					break;
+//				}
+//			}
+//		}
+//	}
 	
 	private void findGame(){
 		
@@ -492,7 +639,7 @@ public class ManageGui extends MainForm {
 			public void widgetSelected(SelectionEvent arg0) {
 				
 				switch(eB){
-				case UNLOAD: cleanCenter(); drawAddList(true, true); break;
+//				case UNLOAD: cleanCenter(); drawAddList(true, true); break;
 //				case MANAGE: cleanCenter(); drawAddList(true); caricaForm = true; break;
 				case SAVE: {saveForm();
 							if(!caricaForm) 
@@ -537,6 +684,7 @@ public class ManageGui extends MainForm {
 			case MANAGE: return "finalize";
 			case MODIFY:
 			case SAVE:
+			case UNLOAD: return "unload";
 			case LOAD_LIST: return "loadList";
 			case ADD_LIST: return "newList";
 			case INDIETRO: return "indietro"; //$NON-NLS-1$

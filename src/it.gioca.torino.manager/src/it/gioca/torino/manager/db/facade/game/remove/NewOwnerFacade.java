@@ -24,13 +24,19 @@ public class NewOwnerFacade extends ConnectionManager {
 		FindIDUserFacade fiuf = new FindIDUserFacade(ru);
 		int ownerId = fiuf.getId();
 		
+		ru.setUserName(req.getOldOwner());
+		fiuf = new FindIDUserFacade(ru);
+		int oldOwnerId = fiuf.getId();
+		
 		for(int idGame: req.getGames()){
 			String query  = SingletonQuery.getInstance().getQuery("LEAVE", 3);
 			try{
 				pstmt = conn.prepareStatement(query);
 				pstmt.setInt(1, ownerId);
-				pstmt.setInt(2, idGame);
-				pstmt.execute();
+				pstmt.setInt(2, oldOwnerId);
+				pstmt.setInt(3, idGame);
+				pstmt.setInt(4, oldOwnerId);
+				pstmt.executeUpdate();
 				exit = true;
 			}catch(SQLException e){
 				e.printStackTrace();

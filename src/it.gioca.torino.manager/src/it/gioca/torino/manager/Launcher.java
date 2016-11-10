@@ -39,11 +39,11 @@ public class Launcher {
 		FormUtil.ButtonHeight = shell.getBounds().height /20;
 		int value = shell.getBounds().width;
 		if(value<1000)
-			FormUtil.RESIZE_IMAGE_MULTI=4;
-		if(value>1000 && value<3000)
-			FormUtil.RESIZE_IMAGE_MULTI=2;
-		if(value>3000)
-			FormUtil.RESIZE_IMAGE_MULTI=1;
+			FormUtil.RESIZE_IMAGE_MULTI=Config.RESIZEMIN;
+		if(value>1000 && value<2399)
+			FormUtil.RESIZE_IMAGE_MULTI=Config.RESIZEMID;
+		if(value>2399)
+			FormUtil.RESIZE_IMAGE_MULTI=Config.RESIZEMAX;
 		shell.addListener(SWT.Close, new Listener() {
 			public void handleEvent(Event event) {
 				YESNODialog yn = new YESNODialog(shell);

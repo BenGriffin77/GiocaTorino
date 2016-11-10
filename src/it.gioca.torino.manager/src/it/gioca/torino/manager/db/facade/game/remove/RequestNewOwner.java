@@ -9,6 +9,8 @@ public class RequestNewOwner implements IRequestDTO {
 		
 	private String newOwner;
 	
+	private String oldOwner;
+	
 	private List<Integer> games;
 
 	public String getNewOwner() {
@@ -25,5 +27,13 @@ public class RequestNewOwner implements IRequestDTO {
 
 	public void setGames(List<Integer> games) {
 		this.games = games;
+	}
+
+	public String getOldOwner() {
+		return oldOwner;
+	}
+
+	public void setOldOwner(String oldOwner) {
+		this.oldOwner = oldOwner;
 	}
 }

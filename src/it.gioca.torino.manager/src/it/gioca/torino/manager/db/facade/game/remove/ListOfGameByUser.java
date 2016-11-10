@@ -39,13 +39,13 @@ public class ListOfGameByUser extends ConnectionManager {
 					String name = rset.getString("NAME");
 					int status = rset.getInt("STATUS");
 					byte[] thumbnail = null;
-					if(req.isCheckGame()){
+//					if(req.isCheckGame()){
 						Blob image = rset.getBlob("thumbnail");
 						if(image!=null){
 							thumbnail = image.getBytes(1, (int)image.length());
 							image.free();
 						}
-					}
+//					}
 					bg = new BoardGame(gameId, name, thumbnail);
 					bg.setStatusGame(status);
 					if(req.isCheckGame()){

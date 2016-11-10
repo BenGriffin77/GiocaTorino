@@ -119,5 +119,8 @@ public abstract class MainForm {
 		return 1;
 	}
 	
-	
+	protected String[] getArrayFromList(List<String> list){
+		String []dsf = new String[list.size()];
+		return list.toArray(dsf);
+	}
 }

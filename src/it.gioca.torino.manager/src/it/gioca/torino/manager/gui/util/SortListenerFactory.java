@@ -232,12 +232,6 @@ public class SortListenerFactory implements Listener
             		item.setImage(j,items[i].getImage(j));
             	}
             }
-//            if(items[i].getImage()!=null){
-//            	item.setImage(items[i].getImage());
-//            }
-//            if(items[i].getImage(0)!=null)
-//            	item.setImage(0,items[i].getImage());
-//            item.setForeground(items[i].getForeground());
             items[i].dispose();
         }
         

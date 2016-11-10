@@ -11,6 +11,15 @@
 						WHERE boardgame_status.OWNERID = users.USERID</value>
 		<value id="6">UPDATE giocatorino.users SET giocatorino.users.STATUS=? WHERE giocatorino.users.USERID=?</value>
 		<value id="7">SELECT USERNAME from giocatorino.users WHERE giocatorino.users.USERID=?</value>
+		<value id="8">SELECT U.USERID, U.USERNAME, U.STATUS, (SELECT COUNT(ID_GAME) FROM giocatorino.boardgame_status B WHERE B.OWNERID = U.USERID) AS COUNT, U.email, U.realname
+		    			FROM giocatorino.users U ORDER BY U.USERNAME</value>
+		<value id="9">DELETE FROM giocatorino.users WHERE USERID = ?</value>
+		<value id="10">UPDATE giocatorino.users SET STATUS=? WHERE USERID = ?</value>
+		<value id="11">SELECT COUNT(ID_GAME) AS COUNT FROM giocatorino.preloads WHERE USER=?</value>
+		<value id="12">SELECT U.USERID, U.USERNAME, U.STATUS, email, realname FROM giocatorino.users U WHERE U.USERID = ?</value>
+		<value id="13">UPDATE giocatorino.users SET USERNAME=?, email=?, realname=? WHERE USERID = ?</value>
+		<value id="14">SELECT DISTINCT DEMONSTRATOR, (SELECT COUNT(*) from giocatorino.history B WHERE A.DEMONSTRATOR = B.DEMONSTRATOR) AS COUNT, U.USERNAME 
+		    			FROM giocatorino.history A, giocatorino.users U where ID_GAME=? AND A.DEMONSTRATOR=U.USERID ORDER BY COUNT DESC</value>
 	</query>
 	<query name="FINDBOARDGAMES">
 		<value id="0">SELECT ID, NAME, thumbnail FROM giocatorino.boardgames WHERE ID=?</value>
@@ -38,12 +47,11 @@
 		<value id="3">DELETE FROM giocatorino.preloads WHERE ID_GAME=? AND USER=?</value>
 		<value id="4">UPDATE giocatorino.preloads SET LANGUAGE=? WHERE ID_GAME=? AND USER=?</value>
 		<value id="5">DELETE FROM giocatorino.preloads WHERE USER=?</value>
-		<value id="6">SELECT DISTINCT language FROM giocatorino.preloads</value>
 	</query>
 	<query name="BOARDGAME_STATUS">
 		<value id="0">INSERT INTO boardgame_status (ID_GAME, OWNERID, STATUS, LANGUAGE, ID_MAINGAME, DEMONSTRATOR) VALUES(?,?,?,?,?,0)</value>
 		<value id="1">SELECT giocatorino.boardgames.NAME, giocatorino.boardgames.thumbnail, giocatorino.users.USERNAME, boardgame_status.ID_GAME,
-						giocatorino.boardgame_status.LANGUAGE,giocatorino.boardgame_status.OWNERID, giocatorino.boardgame_status.ID_EXIT, giocatorino.boardgame_status.STATUS
+						giocatorino.boardgame_status.OWNERID, giocatorino.boardgame_status.ID_EXIT, giocatorino.boardgame_status.STATUS, giocatorino.boardgame_status.LANGUAGE
 						FROM giocatorino.boardgame_status, giocatorino.boardgames, giocatorino.users 
 						WHERE boardgame_status.STATUS=? 
 							AND boardgame_status.ID_MAINGAME=0 
@@ -63,12 +71,12 @@
 		<value id="7">UPDATE giocatorino.boardgame_status SET ID_EXIT=? WHERE ID_GAME = ? AND OWNERID = ?</value>
 		<value id="8">UPDATE giocatorino.boardgame_status SET ID_EXIT=? WHERE ID_MAINGAME = ? AND OWNERID = ?</value>
 		<value id="9">SELECT DISTINCT ID_EXIT FROM giocatorino.boardgame_status WHERE ID_EXIT!=0 ORDER BY ID_EXIT</value>
-		<value id="10">SELECT giocatorino.boardgame_status.ID_GAME, giocatorino.boardgames.thumbnail, giocatorino.boardgame_status.OWNERID, giocatorino.boardgames.NAME
+		<value id="10">SELECT giocatorino.boardgame_status.ID_GAME, giocatorino.boardgames.thumbnail, giocatorino.boardgame_status.OWNERID, giocatorino.boardgames.NAME, giocatorino.boardgame_status.LANGUAGE
 					 	FROM giocatorino.boardgame_status, giocatorino.boardgames
 							WHERE giocatorino.boardgame_status.ID_EXIT=? AND giocatorino.boardgame_status.ID_MAINGAME=0
 							AND giocatorino.boardgame_status.ID_GAME=giocatorino.boardgames.ID</value>
 		<value id="11">SELECT giocatorino.boardgames.NAME, giocatorino.boardgames.thumbnail, giocatorino.users.USERNAME, boardgame_status.ID_GAME,
-						giocatorino.boardgame_status.LANGUAGE,giocatorino.boardgame_status.OWNERID, giocatorino.boardgame_status.ID_EXIT, giocatorino.boardgame_status.STATUS
+						giocatorino.boardgame_status.OWNERID, giocatorino.boardgame_status.ID_EXIT, giocatorino.boardgame_status.STATUS, giocatorino.boardgame_status.LANGUAGE
 						FROM giocatorino.boardgame_status, giocatorino.boardgames, giocatorino.users 
 						WHERE (boardgame_status.STATUS=0 || boardgame_status.STATUS=2) 
 							AND boardgame_status.ID_MAINGAME=0 
@@ -84,6 +92,7 @@
 							AND giocatorino.boardgame_designer.ID_DESIGNER = giocatorino.designer_fkey.ID_DESIGNER
 							AND giocatorino.designer_fkey.ID_GAME = giocatorino.boardgames.ID
 							AND giocatorino.boardgame_designer.DESIGNER_NAME like ?</value>
+		<value id="13">SELECT NAME FROM giocatorino.alternativenames WHERE ID_GAME=?</value>
 	</query>
 	<query name="HISTORY">
 		<value id="0">SELECT COUNT(*) AS COUNT FROM giocatorino.history WHERE ID_GAME=? AND DEMONSTRATOR=?</value>
@@ -93,6 +102,9 @@
 						FROM giocatorino.history, giocatorino.boardgames, giocatorino.users
 						WHERE giocatorino.history.ID_GAME=giocatorino.boardgames.ID
 						AND giocatorino.users.USERID=giocatorino.history.DEMONSTRATOR</value>
+		<value id="4">INSERT INTO giocatorino.history (ID_GAME, DEMONSTRATOR, START) values(?,?,?)</value>
+		<value id="5">UPDATE  giocatorino.history SET END=? WHERE id=?</value>
+		<value id="6">SELECT max(id) AS ID FROM giocatorino.history H, giocatorino.users U where H.ID_GAME=? AND U.USERNAME like ? AND H.DEMONSTRATOR=U.USERID;</value>
 	</query>
 	<query name="SEARCH">
 		<value id="0">SELECT giocatorino.boardgames.NAME, giocatorino.boardgames.thumbnail, giocatorino.boardgames.MINPL, giocatorino.boardgames.MAXPL,
@@ -127,8 +139,8 @@
 						AND giocatorino.boardgame_status.ID_MAINGAME=0
 						AND giocatorino.boardgame_status.STATUS!=0
 						AND giocatorino.users.USERID=giocatorino.boardgame_status.DEMONSTRATOR</value>
-		<value id="3">UPDATE giocatorino.boardgame_status SET giocatorino.boardgame_status.OWNERID=? 
-						WHERE ID_GAME=?</value>
+		<value id="3">UPDATE giocatorino.boardgame_status SET giocatorino.boardgame_status.OWNERID=?, giocatorino.boardgame_status.ID_OLD_OWNER=?  
+						WHERE ID_GAME=? AND giocatorino.boardgame_status.OWNERID=?</value>
 	</query>
 	<query name="MANAGEMENT">
 		<value id="0">SELECT ID, giocatorino.boardgames.NAMES FROM giocatorino.boardgames WHERE giocatorino.boardgames.NAMES!='NULL' LIMIT 1000000</value>
@@ -147,6 +159,13 @@
 		<value id="11">SELECT MAX(ID_CATEGORY) AS MAX from giocatorino.boardgame_catogory</value>
 	</query>
 	<query name="SEARCH">
-	    <value id="0">SELECT B.CATEGORY_NAME from giocatorino.boardgame_catogory B, giocatorino.category_fkey F	where B.ID_CATEGORY = F.ID_CATEGORY	AND F.ID_GAME=?</value>
+	    <value id="0">SELECT B.CATEGORY_NAME from giocatorino.boardgame_catogory B, giocatorino.category_fkey F	WHERE B.ID_CATEGORY = F.ID_CATEGORY	AND F.ID_GAME=?</value>
+	    <value id="1">SELECT D.DESIGNER_NAME from giocatorino.boardgame_designer D, giocatorino.designer_fkey F WHERE D.ID_DESIGNER = F.ID_DESIGNER AND F.ID_GAME=?</value>
+	    <value id="2">SELECT B.MAXTIME, B.MINTIME FROM giocatorino.boardgames B WHERE B.ID =?</value>
+	    <value id="3">SELECT B.MINPL, B.MAXPL FROM giocatorino.boardgames B WHERE ID =?;</value>
+	</query>
+	<query name="LEAVEWITHOUT">
+	    <value id="0">SELECT STATUS FROM giocatorino.boardgame_status WHERE OWNERID=? AND ID_GAME=?</value>
+	    <value id="1">DELETE FROM giocatorino.boardgame_status WHERE giocatorino.boardgame_status.OWNERID=? AND ID_GAME=?</value>
 	</query>
 </list>
