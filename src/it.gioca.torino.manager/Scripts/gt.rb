@@ -8,6 +8,8 @@ require 'parseconfig'
 require 'cld'
 require 'optparse'
 require 'pp'
+require 'json'
+require_relative './common'
 
 def parseOptions()
 	options = {}
@@ -38,10 +40,10 @@ end
 def createCollections(games, db)
 	
 	games.each { |item|
-		puts "INSERT into collections(id_user, id_boardgame, language) values(#{item['id_user']}, #{item['id_boardgame']}, '#{item['language']}');"
+		puts "INSERT into preloads(user, id_game, language, quantity, id_maingame) values(#{item['id_user']}, #{item['id_boardgame']}, '#{item['language']}', 1, 0);"
 		
 		begin
-			db.query("INSERT into collections(id_user, id_boardgame, language) values(#{item['id_user']}, #{item['id_boardgame']}, '#{item['language']}');")
+			db.query("INSERT into preloads(user, id_game, language, quantity, id_maingame) values(#{item['id_user']}, #{item['id_boardgame']}, '#{item['language']}', 1, 0);")
 		rescue Mysql::Error => err
 			puts err
 			next
@@ -50,9 +52,9 @@ def createCollections(games, db)
 	
 end
 
-def gameLookup(text, users, options)
-	collections = []
-	commonLanguages = ['en', 'fr', 'it',  'de']
+def gameLookup(text, users, options, languages)
+	preloads = []
+	commonLanguages = ['en', 'fr', 'it',  'de', 'es']
 	
 	text.each { |line|
 		title = {}
@@ -66,7 +68,7 @@ def gameLookup(text, users, options)
 		if quantity > 1
 			puts "Quantity > 1, checking for existing entry.."
 			
-			collections.each { |item| 
+			preloads.each { |item| 
 				if item['gameQuery'] == gameQuery
 					puts "Existing entry has been found"
 					found = true
@@ -110,7 +112,6 @@ def gameLookup(text, users, options)
 						x = 0
 				
 						games.each { |game| 
-							#test_var(game)
 					
 							if game.has_key? 'yearpublished'
 								year = ", Year: #{game['yearpublished'].first['value']}"
@@ -144,13 +145,22 @@ def gameLookup(text, users, options)
 					elsif not language[:reliable]
 						print "Language detected is #{language[:name]}\nPlease confirm by pressing ENTER or enter different language ISO code (ie. en,fr,it,de): "
 						answer = $stdin.gets.chomp
-						language[:code] = answer[0..1] if answer.length > 1
+						
+						if answer.length > 1
+							languages.each { |lang| 
+								if lang['code'] == answer or lang['short'] == answer or lang['name'] =~ /#{answer}/
+									language[:name] = lang['name']
+									language[:code] = lang['code']
+									break
+								end
+							}
+						end
 					else
 						puts "Language for #{gameName} reliably detected as #{language[:name]}"
 					end
 				end
 						
-				title.merge!({ 'gameQuery' => gameQuery, 'id_boardgame' => games[choice]['id'].to_i, 'language' => language[:code]})
+				title.merge!({ 'gameQuery' => gameQuery, 'id_boardgame' => games[choice]['id'].to_i, 'language' => language[:name]})
 			else 
 				if res['total'].to_i < 1
 					print "No suitable match has been found (typo?). Please insert correct name to search for: "
@@ -167,7 +177,7 @@ def gameLookup(text, users, options)
 		end
 			
 		users.each { |user|
-			test_var(user)
+			puts user.inspect
 		 
 			if user['name'] == name
 				title.merge!({ 'id_user' => user['id'] })
@@ -175,17 +185,12 @@ def gameLookup(text, users, options)
 			end
 		}
 		
-		collections << title
+		preloads << title
 		puts
 
 	}
 	
-	return collections
-end
-
-def test_var(h)
-    h.each_pair {|key, value| print "#{key} is #{value}, " }
-    puts	
+	return preloads
 end
 
 def userLookup(text, db)
@@ -201,7 +206,7 @@ def userLookup(text, db)
 	names.each { |name|
 		ary = []
 		choice, x = 0, 0
-		res = db.query("SELECT * from users where realname like '%#{name}%' or nickname like '%#{name}%';")
+		res = db.query("SELECT userid as id, realname, username, email from users where realname like '%#{name}%' or username like '%#{name}%';")
 		puts "Searched for #{name}. #{res.num_rows} matches found:"
 		#puts res.methods
 		#exit
@@ -223,7 +228,7 @@ def userLookup(text, db)
 		
 			res.each_hash { |row|
 				ary << row
-				puts "#{x}. Real Name: #{row['realname']}, Nickname: #{row['nickname']}, Email: #{row['email']}"
+				puts "#{x}. Realname: #{row['realname']}, username: #{row['username']}, Email: #{row['email']}"
 				x += 1
 			}
 		
@@ -233,7 +238,7 @@ def userLookup(text, db)
 	    else
 	    	res.each_hash { |row| 
 	    		ary << row
-	    		puts "Real Name: #{row['realname']}, Nickname: #{row['nickname']}, Email: #{row['email']}" 
+	    		puts "Realname: #{row['realname']}, username: #{row['username']}, Email: #{row['email']}" 
 	    	}	
 		end
 		
@@ -247,16 +252,16 @@ end
 
 
 def create_tables(db, internaldb)
-db.query("create database if not exists #{internaldb};")
+	#db.query("create database if not exists #{internaldb};")
 
     #Set current DB for further operations
 	db.select_db("#{internaldb}")
 	
-	db.query("CREATE TABLE if not exists users (id tinyint(2) unsigned NOT NULL auto_increment, realname char(64), nickname char(32), email char(64), role tinyint(2), available mediumint(6) default 0, PRIMARY KEY (id)) engine=innodb;")
+	#db.query("CREATE TABLE if not exists users (id tinyint(2) unsigned NOT NULL auto_increment, realname char(64), nickname char(32), email char(64), role tinyint(2), available mediumint(6) default 0, PRIMARY KEY (id)) engine=innodb;")
 
-    db.query("CREATE TABLE if not exists collections (id smallint(4) unsigned NOT NULL auto_increment, id_user tinyint(2) unsigned not null, id_boardgame int(11) not null, status enum('checkin', 'ludoteca', 'demo', 'checkout') default 'checkin', document tinyint(2) unsigned default 0, language char(2), PRIMARY KEY (id), FOREIGN KEY (id_user) REFERENCES users(id) on update cascade on delete cascade, FOREIGN KEY (id_boardgame) REFERENCES boardgames(ID) on update cascade on delete cascade) engine=innodb;")
+    #db.query("CREATE TABLE if not exists preloads (id smallint(4) unsigned NOT NULL auto_increment, id_user tinyint(2) unsigned not null, id_boardgame int(11) not null, status enum('checkin', 'ludoteca', 'demo', 'checkout') default 'checkin', document tinyint(2) unsigned default 0, language char(2), PRIMARY KEY (id), FOREIGN KEY (id_user) REFERENCES users(id) on update cascade on delete cascade, FOREIGN KEY (id_boardgame) REFERENCES boardgames(ID) on update cascade on delete cascade) engine=innodb;")
 	
-    db.query("CREATE TABLE if not exists demos (id smallint(4) unsigned not null auto_increment, id_user tinyint(2) unsigned not null, id_collection smallint(4) unsigned not null, start timestamp default 0, end timestamp default 0, PRIMARY KEY (id), INDEX (id_user,id_collection), FOREIGN KEY (id_user) REFERENCES users(id) on update cascade on delete cascade, FOREIGN KEY (id_collection) REFERENCES collections(id) on update cascade on delete cascade) engine=innodb;")
+    #db.query("CREATE TABLE if not exists demos (id smallint(4) unsigned not null auto_increment, id_user tinyint(2) unsigned not null, id_preloads smallint(4) unsigned not null, start timestamp default 0, end timestamp default 0, PRIMARY KEY (id), INDEX (id_user,id_preloads), FOREIGN KEY (id_user) REFERENCES users(id) on update cascade on delete cascade, FOREIGN KEY (id_preloads) REFERENCES preloads(id) on update cascade on delete cascade) engine=innodb;")
 
 end
 
@@ -273,6 +278,8 @@ trap("INT") {
     end
 }
 
+
+
 begin
 	options = parseOptions()
 rescue OptionParser::MissingArgument => err
@@ -284,16 +291,12 @@ end
 #puts "yes option" if options.has_key?(:yes)
 import = options[:file]
 config = ParseConfig.new("gt.conf")
+languages = JSON(config['languages']).to_ary
+#puts languages.inspect
+#exit
 
 
-#here we connect to target DBMS, select our DB and perform the main procedure to substitute any raw id
-begin
-    dbh = Mysql.real_connect(config['dbms'], config['dbuser'], config['dbpass'], 'mysql')
-rescue Mysql::Error
-    puts "\t!! Error connecting to DBMS. QUITTING !!"
-    exit
-end
-
+dbh = Common.dbConnect(config) 
 create_tables(dbh, config['internaldb'])
 
 begin
@@ -305,13 +308,13 @@ rescue Errno::ENOENT => err
 end
 
 users = userLookup(text, dbh)
-#users.each { |user| test_var(user); puts }
+puts users.inspect
 puts
-games = gameLookup(text, users, options)
+games = gameLookup(text, users, options, languages)
 createCollections(games, dbh)
 puts
 
-#select boardgames.name,boardgames.age,users.realname,users.nickname from collections inner join users on collections.id_user = users.id inner join boardgames on collections.id_boardgame = boardgames.id;
+#select boardgames.name,boardgames.age,users.realname,users.nickname from preloads inner join users on preloads.id_user = users.id inner join boardgames on preloads.id_boardgame = boardgames.id;
 
 
 

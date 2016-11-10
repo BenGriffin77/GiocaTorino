@@ -89,6 +89,18 @@ public class AddListGui extends MainForm {
 	}
 
 	private String[] getUsers(){
+<<<<<<< HEAD
+=======
+		
+		RequestGetUsers request = new RequestGetUsers();
+		request.setAll(true);
+		UserListFacade ulf = new UserListFacade(request);
+		String[] users = ulf.getUsers();
+		return users;
+	}
+	
+	private void drawCentrale() {
+>>>>>>> master
 		
 		RequestGetUsers request = new RequestGetUsers();
 		request.setAll(true);
@@ -141,8 +153,12 @@ public class AddListGui extends MainForm {
 					}
 				});
 				FormUtil.createLabel(group, 1, "");
+<<<<<<< HEAD
 				Button b = drawButton(Messages.getString("AddListGui.16"),group, EBUTTON.ADDLIST);
 				b.setEnabled(false);
+=======
+				drawButton(Messages.getString("AddListGui.16"),group, EBUTTON.ADDLIST);
+>>>>>>> master
 			}
 			ColumnType[] columns = {new ColumnType(Messages.getString("AddListGui.6"), CTYPE.TEXT),
 					new ColumnType(Messages.getString("AddListGui.7"), CTYPE.TEXT)};
@@ -276,8 +292,8 @@ public class AddListGui extends MainForm {
 		if(games.size()>0){
 			for(BoardGame game: games){
 				TableItem ti = new TableItem(tableGames, SWT.NONE);
-				ti.setText(new String[]{game.getName(),game.getGameId()+""});
-				game.setLanguage("ITALIANO");
+				ti.setText(new String[]{game.getName(),game.getGameId()+"",game.getLanguage()});
+				//game.setLanguage("ITALIANO");
 				if(newElements)
 					boardsGame.add(new BoardGame(game));
 				else

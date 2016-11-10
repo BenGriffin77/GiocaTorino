@@ -16,7 +16,7 @@ public class SingletonQuery {
 
 	private static SingletonQuery instance;
 	
-	private boolean debug = false;
+	private boolean debug = true;
 	
 	private HashMap<String, Query> queries = new HashMap<String, Query>();
 	

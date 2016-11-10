@@ -31,7 +31,7 @@ public class AddBoardGamesToLibraryFacade extends ConnectionManager {
 		try{
 			for(BoardGame bg: req.getBoardgames()){
 				insert(bg, ret);
-				delete(bg, ret);
+				//delete(bg, ret);
 			}
 		}catch (SQLException e) {
 			e.printStackTrace();

@@ -85,6 +85,7 @@ public class ManageGui extends MainForm {
 //		drawAddList(modifica, false);
 //	}
 	
+<<<<<<< HEAD
 //	private void drawAddList(final boolean modifica, final boolean tryToExit){
 //		editedForm = false;
 //		boardsGame = new ArrayList<BoardGame>();
@@ -244,6 +245,168 @@ public class ManageGui extends MainForm {
 //		}
 //		centrale.layout();
 //	}
+=======
+	private void drawAddList(final boolean modifica, final boolean tryToExit){
+		editedForm = false;
+		boardsGame = new ArrayList<BoardGame>();
+		
+		Composite centrale =  getMainComposite();
+		GridData gdData = new GridData(GridData.FILL_BOTH);
+		GridLayout gdLayout = new GridLayout();
+		centrale.setLayout(gdLayout);
+		centrale.setLayoutData(gdData);
+		centrale.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+		Group group = FormUtil.createGenGroup(centrale, 1, 2, "", true);
+		{
+			FormUtil.createLabel(group, 1, Messages.getString("ManageGui.7"));
+			if(!modifica){
+				demonstrator = FormUtil.createText(group, 1, "");
+				demonstrator.setData(demonstrator.getText());
+				demonstrator.addFocusListener(new FocusListener() {
+					
+					@Override
+					public void focusLost(FocusEvent arg0) {
+						demonstrator.setBackground(YELLOW);
+						checkParamitersSaveButton();
+					}
+					
+					@Override
+					public void focusGained(FocusEvent arg0) {
+						demonstrator.setBackground(CYAN);
+					}
+				});
+			}
+			else{
+				RequestGetUsers request = new RequestGetUsers();
+				if(tryToExit)
+					request.setExit(true);
+				else
+					request.setAll(false);
+				UserListFacade ulf = new UserListFacade(request);
+				String[] users = ulf.getUsers();
+				user = FormUtil.createCombo(group, 1, users);
+				user.setData("USER");
+				user.addSelectionListener(new SelectionListener() {
+					
+					@Override
+					public void widgetSelected(SelectionEvent arg0) {
+						String userName = user.getText();
+						RequestUser request = new RequestUser();
+						request.setUserName(userName);
+						tableGames.removeAll();
+						if(tableExpansions!=null && !tableExpansions.isDisposed())
+							tableExpansions.removeAll();
+						boardsGame = new ArrayList<BoardGame>();
+						if(!tryToExit){
+							FindBoardGameListFacade fbgl = new FindBoardGameListFacade(request);
+							addItemsToTheTable(fbgl.getGames(), false);
+						}
+						else{
+							ListOfGameByUser fogbu = new ListOfGameByUser(request);
+							addItemsToTheTable(fogbu.getGames(), false);
+						}
+						checkParamitersSaveButton();
+						if(functionSave!=null && !functionSave.isDisposed())
+							functionSave.setEnabled(false);
+						if(uploadGames!=null && !uploadGames.isDisposed())
+							uploadGames.setEnabled(boardsGame.size()>0);
+					}
+					
+					@Override
+					public void widgetDefaultSelected(SelectionEvent arg0) {
+						
+					}
+				});
+			}
+			ColumnType[] columns = {new ColumnType(Messages.getString("ManageGui.8"), CTYPE.TEXT),
+									new ColumnType(Messages.getString("ManageGui.9"), CTYPE.TEXT),
+									new ColumnType(Messages.getString("ManageGui.16"), CTYPE.TEXT)};
+			tableGames = FormUtil.createTable(group, columns);
+			tableGames.addSelectionListener(new SelectionListener() {
+				
+				@Override
+				public void widgetSelected(SelectionEvent arg0) {
+					if(remove!=null && !remove.isDisposed())
+						remove.setEnabled(true);
+					checkParamitersSaveButton();
+					updateTables();
+				}
+				
+				@Override
+				public void widgetDefaultSelected(SelectionEvent arg0) {
+					
+				}
+			});
+			{
+				Group functions = FormUtil.createAGroup(group, 1, 1, Messages.getString("ManageGui.4"), true);
+				if(!tryToExit){
+				drawButton(Messages.getString("ManageGui.5"),functions, EBUTTON.ADD_GAME);
+				remove = drawButton(Messages.getString("ManageGui.6"),functions, EBUTTON.REMOVE_GAME);
+				remove.setEnabled(false);
+				}
+				else{
+//					remove = drawButton(Messages.getString("ManageGui.6"),functions, EBUTTON.REMOVE_GAME);
+//					remove.setEnabled(false);
+					forceRemove = drawButton(Messages.getString("ManageGui.19"), functions, EBUTTON.FORCE_REMOVE_GAME);
+					forceRemove.setEnabled(false);
+				}
+				if(modifica && !tryToExit){
+					uploadGames = drawButton(Messages.getString("ManageGui.13"), functions, EBUTTON.MODIFY);
+					uploadGames.setEnabled(false);
+				}
+				if(editedForm || preparaForm){
+					save = drawButton(Messages.getString("ManageGui.12"), functions, EBUTTON.SAVE);
+					save.setEnabled(false);
+				}
+
+			}
+			if(!tryToExit)
+				{
+					Group expansions = FormUtil.createAGroup(group, 2, 2, Messages.getString("ManageGui.14"), true);
+					ColumnType[] columnsExpansions = {new ColumnType(Messages.getString("ManageGui.17"), CTYPE.INT),
+							new ColumnType(Messages.getString("ManageGui.18"), CTYPE.TEXT)};
+					{
+						tableExpansions = FormUtil.createTable(expansions, columnsExpansions);
+						tableExpansions.addSelectionListener(new SelectionListener() {
+							
+							@Override
+							public void widgetSelected(SelectionEvent arg0) {
+								functionSave.setEnabled(true);
+							}
+							
+							@Override
+							public void widgetDefaultSelected(SelectionEvent arg0) {
+								
+							}
+						});
+						
+						Group moreFunctions = FormUtil.createAGroup(expansions, 1, 1, Messages.getString("ManageGui.15"), true);
+						if(!preparaForm){
+							save = drawButton(Messages.getString("ManageGui.12"), moreFunctions, EBUTTON.SAVE);
+							save.setEnabled(false);
+						}
+						languages = FormUtil.createCombo(moreFunctions, 1);
+						languages.setData("LANGUAGES");
+						languages.addSelectionListener(new SelectionListener() {
+							
+							@Override
+							public void widgetSelected(SelectionEvent arg0) {
+								functionSave.setEnabled(true);
+							}
+							
+							@Override
+							public void widgetDefaultSelected(SelectionEvent arg0) {
+								
+							}
+						});
+						FormUtil.createLabel(moreFunctions, 1, "");
+						FormUtil.createLabel(moreFunctions, 1, "");
+					}
+				}
+		}
+		centrale.layout();
+	}
+>>>>>>> master
 	
 	private void checkParamitersSaveButton(){
 		
@@ -377,12 +540,12 @@ public class ManageGui extends MainForm {
 		if(games.size()>0){
 			for(BoardGame game: games){
 				TableItem ti = new TableItem(tableGames, SWT.NONE);
-				ti.setText(new String[]{game.getName(),game.getGameId()+""});
+				ti.setText(new String[]{game.getName(),game.getGameId()+"",game.getLanguage()});
 				if(forceRemove!=null && !forceRemove.isDisposed()){
 					if(game.getStatusGame()!=0)
 						ti.setBackground(ThemeManager.getColor(COLOR.RED));
 				}
-				game.setLanguage("ITALIANO");
+				//game.setLanguage("ITALIANO");
 				if(newElements)
 					boardsGame.add(new BoardGame(game));
 				else

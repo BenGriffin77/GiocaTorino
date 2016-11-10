@@ -26,6 +26,8 @@ public class BoardGame extends TinyGame {
 	private int maxPlayers;
 	private List<String> alternativeNames;
 	
+	private List<String> categories;
+	
 	public BoardGame(TinyGame game) {
 		super(game.getGameId(), game.getName(), null);
 	}
@@ -58,8 +60,12 @@ public class BoardGame extends TinyGame {
 	}
 
 	public String getLanguage() {
+<<<<<<< HEAD
 		return this.language;
 //		return (language==null || language.equalsIgnoreCase(""))?"ITALIANO":language;
+=======
+		return language;
+>>>>>>> master
 	}
 
 	public void setLanguage(String language) {
@@ -150,6 +156,7 @@ public class BoardGame extends TinyGame {
 		return false;
 	}
 
+<<<<<<< HEAD
 	public List<String> getDesigners() {
 		return designers;
 	}
@@ -217,4 +224,6 @@ public class BoardGame extends TinyGame {
 	public void setAlternativeNames(List<String> alternativeNames) {
 		this.alternativeNames = alternativeNames;
 	}
+=======
+>>>>>>> master
 }
