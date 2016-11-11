@@ -28,9 +28,9 @@ public class FindAvabileGameFacade extends ConnectionManager {
 		switch(req.getRequestType()){
 			case FULL: break;
 			case ID: query = query.concat(" AND boardgame_status.ID_GAME=?"); break;
-			case NAME: query = query.concat(" AND giocatorino.boardgames.NAME LIKE ?"); break;
+			case NAME: query = query.concat(" AND boardgames.NAME LIKE ?"); break;
 			case DESIGNER: query = SingletonQuery.getInstance().getQuery("BOARDGAME_STATUS", 12); break;
-			case LANGUAGE: query = query.concat(" AND giocatorino.boardgame_status.LANGUAGE=?"); break;
+			case LANGUAGE: query = query.concat(" AND boardgame_status.LANGUAGE=?"); break;
 		}
 		try{
 			pstmt = conn.prepareStatement(query);

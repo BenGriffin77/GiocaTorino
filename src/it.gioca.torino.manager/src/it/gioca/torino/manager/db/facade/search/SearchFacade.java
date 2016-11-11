@@ -36,7 +36,7 @@ public class SearchFacade extends ConnectionManager{
 	
 	private static final String key_condition ="%CONDITIONS%";
 	
-	private static final String TXT = ", AND giocatorino.boardgames.";
+	private static final String TXT = ", AND boardgames.";
 	
 	private static String prepareCondition(SEARCHTYPE type) {
 		

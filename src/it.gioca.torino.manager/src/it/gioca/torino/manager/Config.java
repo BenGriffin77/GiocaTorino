@@ -11,6 +11,7 @@ public class Config {
 	public static String USERDB;
 	public static String PASSWORDDB;
 	public static String URL;
+	public static String INTERNALDB;
 	public static int MAXINT;
 	public static int RESIZEMAX;
 	public static int RESIZEMIN;
@@ -47,6 +48,7 @@ public class Config {
 		USERDB = prop.getProperty("user");
 		PASSWORDDB = prop.getProperty("password");
 		URL = prop.getProperty("url");
+		INTERNALDB = prop.getProperty("db");
 		MAXINT = Integer.parseInt(prop.getProperty("maxNumber"));
 		RESIZEMAX= Integer.parseInt(prop.getProperty("resizeMAX"));
 		RESIZEMID= Integer.parseInt(prop.getProperty("resizeMID"));

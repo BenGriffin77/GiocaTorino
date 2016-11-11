@@ -24,7 +24,7 @@ public abstract class ConnectionManager {
 	public ConnectionManager(IRequestDTO request) {
 		
 		ds = new DataSource();
-		ds.setSchema("giocatorino");
+		ds.setSchema(Config.INTERNALDB);
 		ds.setType("mysql");
 		ds.setDriver("com.mysql.jdbc.Driver");
 		ds.setDebug(false);
