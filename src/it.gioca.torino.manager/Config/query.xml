@@ -42,11 +42,11 @@
 	</query>
 	<query name="PREPARED_GAMES">
 		<value id="0">INSERT INTO giocatorino.preloads (USER, ID_GAME, QUANTITY, LANGUAGE, ID_MAINGAME) VALUES(?,?,?,?,?)</value>
-		<value id="1">SELECT ID_GAME, (SELECT NAME FROM giocatorino.boardgames WHERE ID=ID_GAME) AS NAME, LANGUAGE, ID_MAINGAME FROM giocatorino.preloads WHERE USER=?</value>
+		<value id="1">SELECT ID_GAME, (SELECT NAME FROM giocatorino.boardgames WHERE ID=ID_GAME) AS NAME, LANGUAGE, ID_MAINGAME FROM giocatorino.preloads WHERE USER=? and status = 0</value>
 		<value id="2">DELETE FROM giocatorino.preloads WHERE ID_MAINGAME=? AND USER=?</value>
 		<value id="3">DELETE FROM giocatorino.preloads WHERE ID_GAME=? AND USER=?</value>
 		<value id="4">UPDATE giocatorino.preloads SET LANGUAGE=? WHERE ID_GAME=? AND USER=?</value>
-		<value id="5">DELETE FROM giocatorino.preloads WHERE USER=?</value>
+		<value id="5">UPDATE giocatorino.preloads SET status = 1 WHERE USER=?</value>
 	</query>
 	<query name="BOARDGAME_STATUS">
 		<value id="0">INSERT INTO boardgame_status (ID_GAME, OWNERID, STATUS, LANGUAGE, ID_MAINGAME, DEMONSTRATOR) VALUES(?,?,?,?,?,0)</value>

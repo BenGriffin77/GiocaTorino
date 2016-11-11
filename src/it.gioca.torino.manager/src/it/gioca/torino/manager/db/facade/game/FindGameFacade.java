@@ -72,7 +72,7 @@ public class FindGameFacade extends ConnectionManager {
 			try{
 				String query = SingletonQuery.getInstance().getQuery("FINDBOARDGAMES", expansion? 4:5);
 				pstmt = conn.prepareStatement(query);
-				pstmt.setString(1, designer+"%");
+				pstmt.setString(1, "%"+designer+"%");
 				addGame();
 			}	catch (SQLException e) {
 					e.printStackTrace();
